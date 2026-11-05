@@ -13,6 +13,7 @@ Describe your deployment: where the model runs, how much it is allowed to do on 
 - **Graded controls.** Not in place, partial, implemented or verified. Verified only counts when you write down the evidence. Controls change a threat's status; they never quietly lower its rating.
 - **Scanner evidence.** Import [Overreach](https://github.com/bogdanticu88/OverReach) JSON or SARIF, any SARIF 2.1.0 file, or a simple findings list. Evidence grades carry through: reachable on the spec, simulated, or proven. A threat marked mitigated that a validated finding proves exploitable is flagged as a conflict.
 - **Outputs for a review.** Markdown report, threat register CSV, remediation tickets for Jira or ServiceNow, a risk acceptance register with owners and review dates, snapshots to show progress, and a JSON assessment file to save and reload.
+- **3D map.** An isometric view of your deployment: trust zones, components and data flows, with every applicable threat stacked as a column on the component it hits, coloured by status and sized by risk. Pick an attack path and watch it replay: a token moves stage by stage and stops at a gate wherever a stage is broken. Components appear only when your profile has them. Keyboard controls and a text outline are included.
 - **Framework coverage** against the OWASP Top 10 for LLM Applications, the OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS and the MCP security guidance.
 
 ## Privacy
