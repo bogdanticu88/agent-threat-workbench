@@ -117,7 +117,7 @@ tr.detail > td{background:var(--paper-2); padding:18px 20px; border-top:3px soli
 select.lvl{font-size:13px; min-width:132px; flex-shrink:0; border-left-width:4px}
 select.lvl.l0{border-left-color:var(--crit)} select.lvl.l1{border-left-color:#c9a646} select.lvl.l2{border-left-color:var(--olive)} select.lvl.l3{border-left-color:var(--ink); background:var(--acid)}
 .tags{display:flex; flex-wrap:wrap; gap:5px} .tag{font:500 11px var(--f-mono); background:var(--surface); border:1px solid var(--line); padding:2px 6px}
-.cases{margin:0; padding-left:18px; font-size:13.5px} .cases li{margin-bottom:5px}
+.cases{margin:0; padding-left:18px; font-size:13.5px} .cases li{margin-bottom:5px} .cases a, h3 a, .det a{color:var(--ink); text-underline-offset:3px; white-space:nowrap}
 details.accept{margin-top:14px; background:var(--surface); border:1px solid var(--line); padding:10px 14px}
 details summary{cursor:pointer}
 .acc-grid{display:grid; grid-template-columns:110px minmax(0,1fr); gap:8px 12px; align-items:center; margin-top:10px; font-size:14px}
@@ -225,6 +225,20 @@ aside#profile.collapsed{height:auto; padding-bottom:20px}
 .map-legend i.ring{border:2px solid var(--acid); border-radius:50%; width:10px; height:10px}
 .map-outline{margin-top:12px} .map-outline ul{margin:4px 0; padding-left:18px; font-size:13.5px}
 @media (max-width:760px){ .map-wrap{height:auto; min-height:0; overflow:visible} #map-stage{position:relative; height:60vh; min-height:340px} #map-panel{position:static; width:auto; box-shadow:none; max-height:none; margin-top:10px} .map-hint{display:none} }
+
+.grp{border-left:3px solid var(--acid); padding-left:10px; margin-bottom:4px}
+.chipx{display:inline-flex; align-items:stretch; margin:0 4px 4px 0}
+.chipx .chip{border-right:0}
+.chipx .x{border:1px solid var(--line); background:var(--surface); cursor:pointer; padding:0 6px; font-size:13px; line-height:1; color:var(--muted)}
+.chipx .x:hover{color:var(--crit); border-color:var(--crit)}
+.maprow{display:flex; gap:10px; align-items:center; margin-top:6px; flex-wrap:wrap}
+.maprow select{font-size:12px; max-width:220px}
+.method{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px 32px; border-top:1px solid var(--ink); padding-top:8px}
+.method ul{padding-left:18px; margin:6px 0}
+.method li{margin-bottom:6px}
+input.wt{width:58px; padding:2px 5px; font:500 13px var(--f-mono); background:var(--acid); border:1px solid var(--ink)}
+.prof-link{display:block; width:100%; margin:12px 0 2px; background:transparent !important; color:var(--paper) !important; border:1px dashed #65705b !important; padding:7px 10px !important; font-size:12px !important; text-align:left}
+.prof-link:hover{border-color:var(--acid) !important; color:var(--acid) !important}
 @media (max-width:980px){
   .layout{grid-template-columns:1fr}
   aside#profile{position:static; height:auto}
@@ -244,7 +258,7 @@ aside#profile.collapsed{height:auto; padding-bottom:20px}
   <div class="brand">
     <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
     <span class="wordmark">BITWISE DEFENCE</span><span class="sep" aria-hidden="true"></span><h1>Agent Threat Workbench</h1>
-    <span class="ver">v0.2</span>
+    <span class="ver">v0.3</span>
   </div>
   <div class="hdr-right">
     <span id="hdr-count"></span>
@@ -289,8 +303,9 @@ aside#profile.collapsed{height:auto; padding-bottom:20px}
       </div>
     </section>
     <footer class="foot">
-      Bitwise Defence Agent Threat Workbench 0.2. 42 threats, 45 controls, 19 detections and 6 attack paths, written for this project from public sources: OWASP Top 10 for LLM Applications, OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, the MCP security best practices, the CoSAI MCP security paper and published incident write-ups. Ratings are an assessment aid, not advice for a specific system. Everything runs in your browser; nothing is sent anywhere.
-      <a href="https://bitwisedefence.com/">bitwisedefence.com</a> · <a href="https://github.com/bogdanticu88/OverReach">Overreach</a> (open source scanner for agent attack chains)
+      Bitwise Defence Agent Threat Workbench 0.3. 42 threats, 45 controls, 19 detections and 7 attack paths, written for this project from public sources: the OWASP Top 10 for LLM Applications 2026, the OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, the MCP security best practices and published incident write-ups, each linked where it is used. How the numbers are made is set out under Report, Method and weights. Ratings are an assessment aid, not advice for a specific system.
+      <span id="privacy-note">Your answers stay in this browser; nothing you enter is sent anywhere.</span>
+      <a href="https://bitwisedefence.com/">bitwisedefence.com</a> · <a href="https://github.com/bogdanticu88/agent-threat-workbench">Source on GitHub</a> · <a href="https://github.com/bogdanticu88/OverReach">Overreach</a> (open source scanner for agent attack chains)
     </footer>
   </main>
 </div>
@@ -302,7 +317,7 @@ aside#profile.collapsed{height:auto; padding-bottom:20px}
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const SAMPLE_OVERREACH = {"title": "Reference Code Host", "chains_found": 3, "chains": [{"id": "df301d8e0d43", "outcome": "data_theft", "evidence": "hypothetical", "impact": 5, "plausibility": 0.65, "min_confidence": 0.5, "source": {"operation": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "field": "body"}, "boundaries": ["untrusted text drives a privileged action", "acts as 'support-agent'", "tenant-scoped on 'owner'; confirm no cross-tenant access"], "steps": [{"op": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "note": "agent reads attacker text in 'body'"}, {"op": "POST /repos/{owner}/{repo}/hooks", "note": "injected agent invokes a privileged operation"}]}, {"id": "a3af9754ae4d", "outcome": "data_theft", "evidence": "hypothetical", "impact": 5, "plausibility": 0.65, "min_confidence": 0.5, "source": {"operation": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "field": "body"}, "boundaries": ["crosses tenant boundary: no ownership check for 'owner'", "untrusted text drives a privileged action", "acts as 'support-agent'", "tenant-scoped on 'owner'; confirm no cross-tenant access"], "steps": [{"op": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "note": "agent reads attacker text in 'body'"}, {"op": "GET /repos/{owner}/{repo}/contents/{path}", "note": "injected agent invokes a privileged operation"}]}, {"id": "36de90ed53fc", "outcome": "data_theft", "evidence": "hypothetical", "impact": 4, "plausibility": 0.65, "min_confidence": 0.5, "source": {"operation": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "field": "body"}, "boundaries": ["writes to a reader-visible sink (exfiltration)", "untrusted text drives a privileged action", "acts as 'support-agent'", "tenant-scoped on 'owner'; confirm no cross-tenant access"], "steps": [{"op": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "note": "agent reads attacker text in 'body'"}, {"op": "POST /repos/{owner}/{repo}/issues/{issue_number}/comments", "note": "injected agent invokes a privileged operation"}]}], "fix_options": [{"chains_prevented_conditional": 3, "observed_prevention": false, "chains_covered": 3, "chains_total": 3, "workflow_hits": 0, "total_effort": 11, "controls": [{"kind": "egress_allowlist", "target": "POST /repos/{owner}/{repo}/hooks", "effort": 3, "enforces": true, "description": "restrict outbound destinations on POST /repos/{owner}/{repo}/hooks (prevents exfiltration to attacker-named hosts)"}, {"kind": "remove_permission", "target": "POST /repos/{owner}/{repo}/issues/{issue_number}/comments", "effort": 4, "enforces": true, "description": "remove the agent's permission for POST /repos/{owner}/{repo}/issues/{issue_number}/comments (prevents: the agent can no longer call it)"}, {"kind": "remove_permission", "target": "GET /repos/{owner}/{repo}/contents/{path}", "effort": 4, "enforces": true, "description": "remove the agent's permission for GET /repos/{owner}/{repo}/contents/{path} (prevents: the agent can no longer call it)"}]}, {"chains_prevented_conditional": 3, "observed_prevention": false, "chains_covered": 3, "chains_total": 3, "workflow_hits": 0, "total_effort": 12, "controls": [{"kind": "remove_permission", "target": "POST /repos/{owner}/{repo}/issues/{issue_number}/comments", "effort": 4, "enforces": true, "description": "remove the agent's permission for POST /repos/{owner}/{repo}/issues/{issue_number}/comments (prevents: the agent can no longer call it)"}, {"kind": "remove_permission", "target": "POST /repos/{owner}/{repo}/hooks", "effort": 4, "enforces": true, "description": "remove the agent's permission for POST /repos/{owner}/{repo}/hooks (prevents: the agent can no longer call it)"}, {"kind": "remove_permission", "target": "GET /repos/{owner}/{repo}/contents/{path}", "effort": 4, "enforces": true, "description": "remove the agent's permission for GET /repos/{owner}/{repo}/contents/{path} (prevents: the agent can no longer call it)"}]}]};
+const SAMPLE_OVERREACH = {"title":"Reference Code Host","chains_found":3,"chains":[{"id":"df301d8e0d43","outcome":"data_theft","evidence":"hypothetical","impact":5,"plausibility":0.65,"min_confidence":0.5,"source":{"operation":"GET /repos/{owner}/{repo}/issues/{issue_number}/comments","field":"body"},"boundaries":["untrusted text drives a privileged action","acts as 'support-agent'","tenant-scoped on 'owner'; confirm no cross-tenant access"],"steps":[{"op":"GET /repos/{owner}/{repo}/issues/{issue_number}/comments","note":"agent reads attacker text in 'body'"},{"op":"POST /repos/{owner}/{repo}/hooks","note":"injected agent invokes a privileged operation"}]},{"id":"a3af9754ae4d","outcome":"data_theft","evidence":"hypothetical","impact":5,"plausibility":0.65,"min_confidence":0.5,"source":{"operation":"GET /repos/{owner}/{repo}/issues/{issue_number}/comments","field":"body"},"boundaries":["crosses tenant boundary: no ownership check for 'owner'","untrusted text drives a privileged action","acts as 'support-agent'","tenant-scoped on 'owner'; confirm no cross-tenant access"],"steps":[{"op":"GET /repos/{owner}/{repo}/issues/{issue_number}/comments","note":"agent reads attacker text in 'body'"},{"op":"GET /repos/{owner}/{repo}/contents/{path}","note":"injected agent invokes a privileged operation"}]},{"id":"36de90ed53fc","outcome":"data_theft","evidence":"hypothetical","impact":4,"plausibility":0.65,"min_confidence":0.5,"source":{"operation":"GET /repos/{owner}/{repo}/issues/{issue_number}/comments","field":"body"},"boundaries":["writes to a reader-visible sink (exfiltration)","untrusted text drives a privileged action","acts as 'support-agent'","tenant-scoped on 'owner'; confirm no cross-tenant access"],"steps":[{"op":"GET /repos/{owner}/{repo}/issues/{issue_number}/comments","note":"agent reads attacker text in 'body'"},{"op":"POST /repos/{owner}/{repo}/issues/{issue_number}/comments","note":"injected agent invokes a privileged operation"}]}],"fix_options":[{"chains_prevented_conditional":3,"observed_prevention":false,"chains_covered":3,"chains_total":3,"workflow_hits":0,"total_effort":11,"controls":[{"kind":"egress_allowlist","target":"POST /repos/{owner}/{repo}/hooks","effort":3,"enforces":true,"description":"restrict outbound destinations on POST /repos/{owner}/{repo}/hooks (prevents exfiltration to attacker-named hosts)"},{"kind":"remove_permission","target":"POST /repos/{owner}/{repo}/issues/{issue_number}/comments","effort":4,"enforces":true,"description":"remove the agent's permission for POST /repos/{owner}/{repo}/issues/{issue_number}/comments (prevents: the agent can no longer call it)"},{"kind":"remove_permission","target":"GET /repos/{owner}/{repo}/contents/{path}","effort":4,"enforces":true,"description":"remove the agent's permission for GET /repos/{owner}/{repo}/contents/{path} (prevents: the agent can no longer call it)"}]},{"chains_prevented_conditional":3,"observed_prevention":false,"chains_covered":3,"chains_total":3,"workflow_hits":0,"total_effort":12,"controls":[{"kind":"remove_permission","target":"POST /repos/{owner}/{repo}/issues/{issue_number}/comments","effort":4,"enforces":true,"description":"remove the agent's permission for POST /repos/{owner}/{repo}/issues/{issue_number}/comments (prevents: the agent can no longer call it)"},{"kind":"remove_permission","target":"POST /repos/{owner}/{repo}/hooks","effort":4,"enforces":true,"description":"remove the agent's permission for POST /repos/{owner}/{repo}/hooks (prevents: the agent can no longer call it)"},{"kind":"remove_permission","target":"GET /repos/{owner}/{repo}/contents/{path}","effort":4,"enforces":true,"description":"remove the agent's permission for GET /repos/{owner}/{repo}/contents/{path} (prevents: the agent can no longer call it)"}]}]};
 // Bitwise Defence Agent Threat Workbench catalogue v0.1
 // Written independently from public sources. IDs and wording are our own.
 
@@ -409,72 +424,76 @@ const DETECTIONS = [
 // L/I base likelihood and impact 1..5. mod: act | exposed | data | mt
 // map: llm = OWASP LLM Top 10 (2025 IDs), asi = OWASP Top 10 for Agentic Applications 2026, atlas = MITRE ATLAS, mcp = MCP security best practices / CoSAI MCP
 const THREATS = [
-  {id:"T01", dom:0, t:"User overrides the assistant with direct injection or jailbreak", s:"A user types instructions that make the agent ignore its rules, reveal data or call tools it should not.", L:4, I:3, mod:["exposed"], c:["IN-2","IN-3","ID-3","OUT-3","GOV-5"], d:["DT-01"], map:{llm:["LLM01"], asi:["ASI01"], atlas:["AML.T0051.000","AML.T0054"]}},
-  {id:"T02", dom:0, t:"Instructions hidden in email, pages or files hijack the agent", s:"An outsider plants text in content the agent will read. The agent treats it as instructions from its user.", req:["untrusted"], L:4, I:4, mod:["act"], c:["IN-1","IN-2","TL-3","ID-3","OUT-2"], d:["DT-01","DT-02","DT-12"], map:{llm:["LLM01"], asi:["ASI01"], atlas:["AML.T0051.001"]}, cases:["EchoLeak, Microsoft 365 Copilot (CVE-2025-32711, 2025): a crafted email led to data leaving without a click.","Slack AI (2024): a message in a public channel steered answers that leaked private channel content."]},
-  {id:"T03", dom:0, t:"Tool results or MCP responses carry injected instructions", s:"A tool returns attacker-controlled text, such as an issue body or API field, and the agent follows it.", any:["tools","mcp"], L:4, I:4, mod:["act"], c:["IN-1","TL-3","TL-2","TL-1"], d:["DT-01","DT-02","DT-19"], map:{llm:["LLM01"], asi:["ASI01","ASI02"], atlas:["AML.T0051.001"]}, cases:["GitHub MCP (2025): a public issue made an agent copy private repository data into a public pull request."]},
-  {id:"T04", dom:4, t:"Tool descriptions or schemas carry hidden instructions", s:"An MCP server ships tool metadata that tells the model to read files or send data, invisible to the user.", req:["mcp"], L:3, I:4, c:["SC-1","SC-2","TL-1"], d:["DT-06"], map:{llm:["LLM03"], asi:["ASI04"]}, cases:["Tool poisoning research (2025) showed hidden instructions in tool descriptions exfiltrating SSH keys and config."]},
-  {id:"T05", dom:4, t:"An approved server or plugin changes behaviour after approval", s:"A trusted MCP server or package update quietly adds data collection or new instructions.", any:["mcp","plugins"], L:3, I:4, c:["SC-1","SC-2","GOV-2"], d:["DT-06"], map:{llm:["LLM03"], asi:["ASI04"]}, cases:["postmark-mcp (2025): an npm MCP server added a hidden BCC that copied every sent email to the author."]},
-  {id:"T06", dom:4, t:"Malicious or look-alike MCP server, plugin or skill installed", s:"Someone installs a server from a registry that is malicious from the start or impersonates a real one.", any:["mcp","plugins","coding"], L:3, I:5, c:["SC-1","SC-5","GOV-1","SC-3"], d:["DT-14","DT-03"], map:{llm:["LLM03"], asi:["ASI04"], atlas:["AML.T0010"]}},
-  {id:"T07", dom:2, t:"Private data, untrusted content and an outbound channel meet in one agent", s:"The agent can read sensitive data, ingests attacker text and can send or fetch. Any injection becomes exfiltration.", req:["data","untrusted","tools"], L:4, I:5, mod:["act"], c:["TL-3","TL-7","IN-1","TL-2"], d:["DT-02","DT-03","DT-04"], map:{llm:["LLM01","LLM02"], asi:["ASI01","ASI02"], atlas:["AML.T0057"]}, cases:["Supabase MCP with Cursor (2025): a support ticket made an agent with service-role access read and post back private tables."]},
-  {id:"T08", dom:5, t:"Data leaks through rendered markdown images or links", s:"Injected text makes the model output an image URL with data in the query string. The client fetches it.", req:["untrusted"], L:4, I:4, c:["OUT-2","IN-1","OUT-3"], d:["DT-03","DT-04"], map:{llm:["LLM05","LLM02"], asi:["ASI01"], atlas:["AML.T0077"]}, cases:["EchoLeak (2025) used reference-style markdown and an allowed domain to bypass image filtering."]},
-  {id:"T09", dom:1, t:"Confused deputy: the agent uses its own rights for a user who lacks them", s:"Tools run as a powerful service account, so any user can reach data or actions through the agent.", req:["tools"], L:4, I:4, mod:["mt"], c:["ID-3","ID-2","TL-2"], d:["DT-05","DT-09"], map:{llm:["LLM06"], asi:["ASI03"], mcp:["Confused deputy"]}, cases:["MCPHub (CVE-2026-79750): any authenticated user could execute tools on servers owned by others."]},
-  {id:"T10", dom:1, t:"Tokens passed through or accepted for the wrong audience", s:"An MCP server forwards the client's token downstream or accepts tokens minted for something else.", any:["mcp","multi"], L:3, I:4, c:["ID-4","ID-6"], d:["DT-18"], map:{asi:["ASI03"], mcp:["Token passthrough"]}},
-  {id:"T11", dom:1, t:"Missing authorisation on admin functions of the agent platform or gateway", s:"A normal user calls an admin endpoint of the MCP gateway or agent platform and changes its configuration.", req:["mcp"], L:3, I:5, c:["ID-6","SC-3","SC-5","GOV-5"], d:["DT-05","DT-13"], map:{asi:["ASI03"], mcp:["CoSAI MCP-T1"]}, cases:["MCPHub (CVE-2026-79744): non-admin users could rewrite system configuration."]},
-  {id:"T12", dom:4, t:"MCP servers exposed or unauthenticated", s:"A server listens on all interfaces or trusts localhost, so other hosts or a web page can call it.", req:["mcp"], L:3, I:5, c:["SC-3","ID-6","SC-4"], d:["DT-14","DT-12"], map:{asi:["ASI04"], mcp:["CoSAI MCP-T8","Local server compromise"]}, cases:["MCP Inspector (CVE-2025-49596): an unauthenticated local proxy allowed remote code execution from a browser."]},
-  {id:"T13", dom:4, t:"OAuth flow abuse in MCP clients", s:"A malicious server returns a crafted authorization URL or skips consent, leading to code execution or token theft.", req:["mcp"], L:2, I:5, c:["SC-4","SC-1"], d:["DT-03"], map:{asi:["ASI04"], mcp:["Authorization URL validation"]}, cases:["mcp-remote (CVE-2025-6514): a crafted authorization endpoint ran OS commands on the client."]},
-  {id:"T14", dom:2, t:"Server-side request forgery through tools or MCP metadata", s:"The agent or MCP client fetches attacker-chosen URLs, reaching internal services or cloud metadata.", any:["tools","mcp"], L:3, I:4, c:["TL-7","OUT-1"], d:["DT-03"], map:{llm:["LLM05"], mcp:["SSRF"]}},
-  {id:"T15", dom:2, t:"Agent has more tools, scopes or reach than its task needs", s:"Broad permissions turn any mistake or injection into a large incident.", req:["tools"], L:4, I:4, mod:["act"], c:["TL-1","ID-2","TL-2","TL-4"], d:["DT-02","DT-19"], map:{llm:["LLM06"], asi:["ASI02","ASI03"]}},
-  {id:"T16", dom:2, t:"Agent goes beyond its task with no attacker involved", s:"The agent misreads intent and deletes, sends or changes things nobody asked for.", req:["tools"], L:3, I:4, mod:["act"], c:["TL-4","TL-2","TL-8","OBS-1"], d:["DT-08","DT-19"], map:{llm:["LLM06"], asi:["ASI08","ASI10"]}, cases:["Replit (2025): a coding agent deleted a production database during a code freeze."]},
-  {id:"T17", dom:2, t:"Approvers rubber-stamp or are misled about what they approve", s:"Approval prompts show the model's summary, not the real call, or arrive so often people stop reading.", when:{autonomy:["approve"]}, req:["tools"], L:4, I:4, c:["TL-5","TL-4"], d:["DT-08"], map:{asi:["ASI09"]}},
-  {id:"T18", dom:5, t:"Model output reaches a browser, shell, query or API unvalidated", s:"Generated text becomes HTML, a command or a query and runs with the application's rights.", any:["tools","code"], L:3, I:5, c:["OUT-1","TL-6"], d:["DT-17","DT-02"], map:{llm:["LLM05"], asi:["ASI05"]}},
-  {id:"T19", dom:2, t:"Generated code escapes its sandbox or reaches the network", s:"Code the agent runs reads host credentials, cloud metadata or calls out.", req:["code"], L:3, I:5, c:["TL-6","TL-7","ID-5"], d:["DT-17","DT-03"], map:{asi:["ASI05"]}},
-  {id:"T20", dom:1, t:"Coding agent acts with a developer's credentials on their machine", s:"An IDE or terminal agent inherits SSH keys, cloud sessions and tokens. Injected repo content drives it.", req:["coding"], L:4, I:5, c:["ID-5","TL-6","TL-1","OBS-2","SC-1"], d:["DT-14","DT-17","DT-03"], map:{asi:["ASI03","ASI05"]}, cases:["Amazon Q Developer extension (2025): a malicious commit added a prompt telling the agent to wipe local and cloud resources."]},
-  {id:"T21", dom:3, t:"Retrieval returns documents the user may not read", s:"The index ignores source permissions, so answers include restricted content.", req:["rag"], L:4, I:4, mod:["data"], c:["DA-1","ID-3"], d:["DT-09"], map:{llm:["LLM08","LLM02"]}},
-  {id:"T22", dom:3, t:"Poisoned documents in the index steer answers", s:"An attacker gets content indexed that carries instructions or false facts.", req:["rag"], L:3, I:4, c:["DA-2","IN-1","OUT-4"], d:["DT-07","DT-01"], map:{llm:["LLM04","LLM08"], atlas:["AML.T0070"]}},
-  {id:"T23", dom:3, t:"Embeddings or the vector store leak their source content", s:"Direct access to vectors or chunk text exposes the documents behind them.", req:["rag"], L:2, I:3, mod:["data"], c:["DA-3"], d:["DT-10"], map:{llm:["LLM08"]}},
-  {id:"T24", dom:3, t:"Poisoned memory persists across sessions", s:"Injected text writes a lasting instruction to memory that fires in later conversations.", req:["memory"], L:3, I:4, c:["DA-5","IN-1"], d:["DT-16"], map:{asi:["ASI06"]}, cases:["ChatGPT memory (2024): research showed injected memories that kept exfiltrating chat data across sessions."]},
-  {id:"T25", dom:3, t:"Data crosses between users or tenants", s:"Shared memory, caches, indexes or sessions return one user's data to another.", any:["memory","rag","tools"], L:2, I:5, mod:["mt"], c:["DA-5","ID-3","DA-1"], d:["DT-04","DT-09"], map:{llm:["LLM02"], asi:["ASI06"]}},
-  {id:"T26", dom:3, t:"Answers disclose sensitive data to the wrong person", s:"The model repeats personal or confidential data the reader should not see.", req:["data"], L:3, I:4, c:["DA-4","OUT-3","ID-3","DA-1"], d:["DT-04"], map:{llm:["LLM02"]}},
-  {id:"T27", dom:6, t:"Prompt and trace logs hold sensitive data", s:"Full prompts and tool traces end up in broadly readable logs that are kept for years.", req:["logging"], L:3, I:4, mod:["data"], c:["DA-6"], d:["DT-10"], map:{llm:["LLM02"]}},
-  {id:"T28", dom:6, t:"Model provider handles prompts outside agreed terms", s:"Prompts are kept, reviewed or used for training against your expectations or in the wrong region.", when:{host:["api","platform"]}, L:2, I:4, mod:["data"], c:["GOV-3","DA-4"], d:[], map:{llm:["LLM02"]}},
-  {id:"T29", dom:0, t:"System prompt or hidden context extracted", s:"A user gets the model to reveal its instructions, exposing logic, internal names or secrets.", L:4, I:2, mod:["exposed"], c:["IN-3","OBS-4"], d:["DT-01","DT-12"], map:{llm:["LLM07"], atlas:["AML.T0056"]}},
-  {id:"T30", dom:5, t:"Wrong but confident answers drive real decisions", s:"Users act on fabricated or outdated answers because they sound authoritative.", L:3, I:3, mod:["exposed"], c:["OUT-4","GOV-4"], d:[], map:{llm:["LLM09"], asi:["ASI09"]}, cases:["Air Canada (2024): a tribunal held the airline to a refund policy its chatbot invented."]},
-  {id:"T31", dom:0, t:"Users manipulated through an assistant they trust", s:"Injected content makes the assistant push users to click, pay or disclose something.", req:["untrusted"], L:2, I:3, mod:["exposed"], c:["OUT-2","IN-1","GOV-4"], d:["DT-01"], map:{asi:["ASI09"]}},
-  {id:"T32", dom:6, t:"Runaway usage exhausts budget or capacity", s:"Loops, recursion or abuse burn tokens and API quota.", L:3, I:3, mod:["act","exposed"], c:["IN-4","TL-4"], d:["DT-11"], map:{llm:["LLM10"], atlas:["AML.T0034"]}},
-  {id:"T33", dom:1, t:"Messages between agents spoofed or carrying instructions", s:"One agent forges or injects into messages another agent trusts.", req:["multi"], L:3, I:4, c:["MA-1","ID-6","IN-1"], d:["DT-02"], map:{asi:["ASI07"]}},
-  {id:"T34", dom:2, t:"One agent's failure cascades through others", s:"A bad output from one agent is amplified as downstream agents act on it.", req:["multi"], L:3, I:4, mod:["act"], c:["TL-8","TL-4","MA-1"], d:["DT-19","DT-08"], map:{asi:["ASI08"]}},
-  {id:"T35", dom:6, t:"Prompts, config or tool lists changed without review", s:"A console edit widens tools or weakens rules with no record or approval.", L:3, I:4, c:["GOV-2"], d:["DT-13"], map:{asi:["ASI10"]}},
-  {id:"T36", dom:6, t:"Agents and MCP servers run with no inventory or owner", s:"Teams deploy agents and servers nobody tracks, so nobody patches or reviews them.", L:4, I:3, c:["GOV-1","SC-5"], d:["DT-14"], map:{asi:["ASI10"]}},
-  {id:"T37", dom:6, t:"Agent actions cannot be traced to a user, agent or input", s:"After an incident nobody can say which prompt, user or document caused an action.", req:["tools"], L:4, I:3, c:["OBS-1","OBS-2","OBS-3"], d:["DT-15"], map:{asi:["ASI10"]}},
-  {id:"T38", dom:4, t:"Flaws in the agent framework or platform exploited", s:"A vulnerable orchestration framework or low-code agent builder is reachable and exploitable.", L:3, I:5, c:["SC-5","SC-3","ID-2"], d:["DT-03","DT-12"], map:{llm:["LLM03"], asi:["ASI04"]}, cases:["Langflow (CVE-2025-3248): unauthenticated code execution, later listed in CISA KEV."]},
-  {id:"T39", dom:4, t:"Tampered model weights loaded", s:"A model file from a hub carries a backdoor or code that runs on load.", req:["selfhost"], L:2, I:5, c:["SC-6","SC-5"], d:[], map:{llm:["LLM03","LLM04"], atlas:["AML.T0010"]}},
-  {id:"T40", dom:0, t:"Browser or desktop agent hijacked by page content", s:"A page the agent visits carries instructions that make it click, type or submit on the user's behalf.", req:["browser"], L:4, I:5, mod:["act"], c:["IN-1","TL-3","TL-7","TL-5"], d:["DT-01","DT-03"], map:{llm:["LLM01"], asi:["ASI01"], atlas:["AML.T0051.001"]}},
-  {id:"T41", dom:1, t:"Account takeover hands an attacker someone's assistant", s:"Stolen sessions or crafted links let an attacker use the victim's agent and its access.", L:3, I:4, mod:["exposed"], c:["ID-1"], d:["DT-05"], map:{asi:["ASI03"]}},
-  {id:"T42", dom:1, t:"Agent identities and created resources never expire", s:"Old agent principals, tokens and the resources they made linger with live access.", req:["tools"], L:3, I:3, c:["ID-7","ID-5"], d:["DT-18"], map:{asi:["ASI03"]}}
+  {id:"T01", dom:0, t:"User overrides the assistant with direct injection or jailbreak", s:"A user types instructions that make the agent ignore its rules, reveal data or call tools it should not.", L:4, I:3, mod:["exposed"], c:["IN-3","ID-3","GOV-5"], alt:[["IN-2","OUT-3"]], opt:[], d:["DT-01"], map:{llm:["LLM01"], asi:["ASI01"], atlas:["AML.T0051.000","AML.T0054"]}},
+  {id:"T02", dom:0, t:"Instructions hidden in email, pages or files hijack the agent", s:"An outsider plants text in content the agent will read. The agent treats it as instructions from its user.", req:["untrusted"], L:4, I:4, mod:["act"], c:["ID-3"], alt:[["IN-1","TL-3"],["OUT-2","TL-7"]], opt:["IN-2"], d:["DT-01","DT-02","DT-12"], map:{llm:["LLM01"], asi:["ASI01"], atlas:["AML.T0051.001"]}, cases:[{t:"EchoLeak, Microsoft 365 Copilot (CVE-2025-32711, June 2025): a crafted email led Copilot to send organisational data out with no user click.",u:"https://thehackernews.com/2025/06/zero-click-ai-vulnerability-exposes.html"},{t:"Slack AI (August 2024): instructions posted in a public channel made answers leak data from private channels the attacker could not see.",u:"https://promptarmor.com/resources/data-exfiltration-from-slack-ai-via-indirect-prompt-injection"}]},
+  {id:"T03", dom:0, t:"Tool results or MCP responses carry injected instructions", s:"A tool returns attacker-controlled text, such as an issue body or API field, and the agent follows it.", any:["tools","mcp"], L:4, I:4, mod:["act"], c:["TL-2","TL-1"], alt:[["IN-1","TL-3"]], opt:[], d:["DT-01","DT-02","DT-19"], map:{llm:["LLM01"], asi:["ASI01","ASI02"], atlas:["AML.T0051.001"]}, cases:[{t:"GitHub MCP server (May 2025): a malicious issue in a public repo made the agent copy private repository data into a public pull request.",u:"https://invariantlabs.ai/blog/mcp-github-vulnerability"}]},
+  {id:"T04", dom:4, t:"Tool descriptions or schemas carry hidden instructions", s:"An MCP server ships tool metadata that tells the model to read files or send data, invisible to the user.", req:["mcp"], L:3, I:4, c:["SC-1","SC-2"], alt:[], opt:["TL-1"], d:["DT-06"], map:{llm:["LLM04"], asi:["ASI04"]}, cases:[{t:"Tool poisoning (April 2025): hidden instructions in an MCP tool description made Cursor read SSH keys and MCP config and pass them to the server.",u:"https://invariantlabs.ai/blog/mcp-security-notification"}]},
+  {id:"T05", dom:4, t:"An approved server or plugin changes behaviour after approval", s:"A trusted MCP server or package update quietly adds data collection or new instructions.", any:["mcp","plugins"], L:3, I:4, c:["SC-2"], alt:[["SC-1","GOV-2"]], opt:[], d:["DT-06"], map:{llm:["LLM04"], asi:["ASI04"]}, cases:[{t:"postmark-mcp (September 2025): after 15 clean releases, version 1.0.16 of an npm MCP server added a hidden BCC copying every sent email to the publisher.",u:"https://www.bleepingcomputer.com/news/security/unofficial-postmark-mcp-npm-silently-stole-users-emails/"}]},
+  {id:"T06", dom:4, t:"Malicious or look-alike MCP server, plugin or skill installed", s:"Someone installs a server from a registry that is malicious from the start or impersonates a real one.", any:["mcp","plugins","coding"], L:3, I:5, c:["SC-1"], alt:[["SC-3","TL-7"]], opt:["SC-5","GOV-1"], d:["DT-14","DT-03"], map:{llm:["LLM04"], asi:["ASI04"], atlas:["AML.T0010"]}, cases:[{t:"postmark-mcp (September 2025): an unofficial npm package copied the name and code of Postmark's real MCP server, then turned malicious.",u:"https://www.bleepingcomputer.com/news/security/unofficial-postmark-mcp-npm-silently-stole-users-emails/"}]},
+  {id:"T07", dom:2, t:"Private data, untrusted content and an outbound channel meet in one agent", s:"The agent can read sensitive data, ingests attacker text and can send or fetch. Any injection becomes exfiltration.", req:["data","untrusted","tools"], L:4, I:5, mod:["act"], c:["TL-2"], alt:[["TL-3","IN-1","TL-7"]], opt:[], d:["DT-02","DT-03","DT-04"], map:{llm:["LLM01","LLM02"], asi:["ASI01","ASI02"], atlas:["AML.T0057"]}, cases:[{t:"Supabase MCP with Cursor (July 2025, research demo): a support ticket made an agent running with service-role access read a tokens table and write it back into the ticket.",u:"https://simonwillison.net/2025/Jul/6/supabase-mcp-lethal-trifecta/"}]},
+  {id:"T08", dom:5, t:"Data leaks through rendered markdown images or links", s:"Injected text makes the model output an image URL with data in the query string. The client fetches it.", req:["untrusted"], L:4, I:4, c:["OUT-2"], alt:[], opt:["IN-1","OUT-3"], d:["DT-03","DT-04"], map:{llm:["LLM10","LLM02"], asi:["ASI01"], atlas:["AML.T0077"]}, cases:[{t:"EchoLeak (June 2025): the exploit got past Microsoft's injection classifier and external-link redaction to move data out through the rendered response.",u:"https://www.securityweek.com/echoleak-ai-attack-enabled-theft-of-sensitive-data-via-microsoft-365-copilot/"}]},
+  {id:"T09", dom:1, t:"Confused deputy: the agent uses its own rights for a user who lacks them", s:"Tools run as a powerful service account, so any user can reach data or actions through the agent.", req:["tools"], L:4, I:4, mod:["mt"], c:["ID-3"], alt:[], opt:["ID-2","TL-2"], d:["DT-05","DT-09"], map:{llm:["LLM03"], asi:["ASI03"], mcp:["Confused deputy"]}, cases:[{t:"MCPHub (GHSA-wf8q-wvv8-p8jf, 2026): the SSE endpoint took the username from the URL path without authentication, so callers could run tools as other users. Fixed in 0.12.15.",u:"https://github.com/advisories/GHSA-wf8q-wvv8-p8jf"}]},
+  {id:"T10", dom:1, t:"Tokens passed through or accepted for the wrong audience", s:"An MCP server forwards the client's token downstream or accepts tokens minted for something else.", any:["mcp","multi"], L:3, I:4, c:["ID-4"], alt:[], opt:["ID-6"], d:["DT-18"], map:{asi:["ASI03"], mcp:["Token passthrough"]}},
+  {id:"T11", dom:1, t:"Missing authorisation on admin functions of the agent platform or gateway", s:"A normal user calls an admin endpoint of the MCP gateway or agent platform and changes its configuration.", req:["mcp"], L:3, I:5, c:["ID-6","SC-5"], alt:[], opt:["SC-3","GOV-5"], d:["DT-05","DT-13"], map:{asi:["ASI03"], mcp:["CoSAI MCP-T1"]}, cases:[{t:"MCPHub (CVE-2025-13822): authentication bypass in versions below 0.11.0, published by CERT Polska.",u:"https://cert.pl/en/posts/2026/04/CVE-2025-13822"}]},
+  {id:"T12", dom:4, t:"MCP servers exposed or unauthenticated", s:"A server listens on all interfaces or trusts localhost, so other hosts or a web page can call it.", req:["mcp"], L:3, I:5, c:["SC-3","ID-6"], alt:[], opt:["SC-4"], d:["DT-14","DT-12"], map:{asi:["ASI04"], mcp:["CoSAI MCP-T8","Local server compromise"]}, cases:[{t:"MCP Inspector (CVE-2025-49596, June 2025): no authentication between the Inspector client and its local proxy, so a malicious website could run commands on a developer's machine. Fixed in 0.14.1.",u:"https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596"}]},
+  {id:"T13", dom:4, t:"OAuth flow abuse in MCP clients", s:"A malicious server returns a crafted authorization URL or skips consent, leading to code execution or token theft.", req:["mcp"], L:2, I:5, c:["SC-4"], alt:[], opt:["SC-1"], d:["DT-03"], map:{asi:["ASI04"], mcp:["Authorization URL validation"]}, cases:[{t:"mcp-remote (CVE-2025-6514, July 2025): a malicious server's authorization_endpoint value led to OS command execution on the client. Versions 0.0.5 to 0.1.15.",u:"https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/"}]},
+  {id:"T14", dom:2, t:"Server-side request forgery through tools or MCP metadata", s:"The agent or MCP client fetches attacker-chosen URLs, reaching internal services or cloud metadata.", any:["tools","mcp"], L:3, I:4, c:["TL-7"], alt:[], opt:["OUT-1"], d:["DT-03"], map:{llm:["LLM10"], mcp:["SSRF"]}},
+  {id:"T15", dom:2, t:"Agent has more tools, scopes or reach than its task needs", s:"Broad permissions turn any mistake or injection into a large incident.", req:["tools"], L:4, I:4, mod:["act"], c:["TL-1","ID-2"], alt:[["TL-2","TL-4"]], opt:[], d:["DT-02","DT-19"], map:{llm:["LLM03"], asi:["ASI02","ASI03"]}},
+  {id:"T16", dom:2, t:"Agent goes beyond its task with no attacker involved", s:"The agent misreads intent and deletes, sends or changes things nobody asked for.", req:["tools"], L:3, I:4, mod:["act"], c:["TL-4"], alt:[["TL-2","TL-5"]], opt:["TL-8","OBS-1"], d:["DT-08","DT-19"], map:{llm:["LLM03"], asi:["ASI08","ASI10"]}, cases:[{t:"Replit (July 2025): a coding agent ran destructive commands against a live database during a declared code freeze.",u:"https://www.eweek.com/news/replit-ai-coding-assistant-failure/"}]},
+  {id:"T17", dom:2, t:"Approvers rubber-stamp or are misled about what they approve", s:"Approval prompts show the model's summary, not the real call, or arrive so often people stop reading.", when:{autonomy:["approve"]}, req:["tools"], L:4, I:4, c:["TL-5"], alt:[], opt:["TL-4"], d:["DT-08"], map:{asi:["ASI09"]}},
+  {id:"T18", dom:5, t:"Model output reaches a browser, shell, query or API unvalidated", s:"Generated text becomes HTML, a command or a query and runs with the application's rights.", any:["tools","code"], L:3, I:5, c:["OUT-1"], alt:[], opt:["TL-6"], d:["DT-17","DT-02"], map:{llm:["LLM10"], asi:["ASI05"]}},
+  {id:"T19", dom:2, t:"Generated code escapes its sandbox or reaches the network", s:"Code the agent runs reads host credentials, cloud metadata or calls out.", req:["code"], L:3, I:5, c:["TL-6"], alt:[], opt:["TL-7","ID-5"], d:["DT-17","DT-03"], map:{asi:["ASI05"]}},
+  {id:"T20", dom:1, t:"Coding agent acts with a developer's credentials on their machine", s:"An IDE or terminal agent inherits SSH keys, cloud sessions and tokens. Injected repo content drives it.", req:["coding"], L:4, I:5, c:["ID-5"], alt:[["TL-6","TL-1"]], opt:["OBS-2","SC-1"], d:["DT-14","DT-17","DT-03"], map:{asi:["ASI03","ASI05"]}, cases:[{t:"Amazon Q Developer for VS Code (July 2025): version 1.84.0 shipped with an injected prompt telling the agent to wipe local files and AWS resources. AWS says it was malformed and did not run.",u:"https://www.techradar.com/pro/amazon-ai-coding-agent-hacked-to-inject-data-wiping-commands"}]},
+  {id:"T21", dom:3, t:"Retrieval returns documents the user may not read", s:"The index ignores source permissions, so answers include restricted content.", req:["rag"], L:4, I:4, mod:["data"], c:[], alt:[["DA-1","ID-3"]], opt:[], d:["DT-09"], map:{llm:["LLM09","LLM02"]}},
+  {id:"T22", dom:3, t:"Poisoned documents in the index steer answers", s:"An attacker gets content indexed that carries instructions or false facts.", req:["rag"], L:3, I:4, c:["DA-2"], alt:[], opt:["IN-1","OUT-4"], d:["DT-07","DT-01"], map:{llm:["LLM05","LLM09"], atlas:["AML.T0070"]}},
+  {id:"T23", dom:3, t:"Embeddings or the vector store leak their source content", s:"Direct access to vectors or chunk text exposes the documents behind them.", req:["rag"], L:2, I:3, mod:["data"], c:["DA-3"], alt:[], opt:[], d:["DT-10"], map:{llm:["LLM09"]}},
+  {id:"T24", dom:3, t:"Poisoned memory persists across sessions", s:"Injected text writes a lasting instruction to memory that fires in later conversations.", req:["memory"], L:3, I:4, c:["DA-5"], alt:[], opt:["IN-1"], d:["DT-16"], map:{asi:["ASI06"]}, cases:[{t:"SpAIware, ChatGPT macOS app (September 2024): a prompt injection wrote an instruction into long-term memory that kept sending later conversations to an attacker. Fixed in 1.2024.247.",u:"https://thehackernews.com/2024/09/chatgpt-macos-flaw-couldve-enabled-long.html"}]},
+  {id:"T25", dom:3, t:"Data crosses between users or tenants", s:"Shared memory, caches, indexes or sessions return one user's data to another.", any:["memory","rag","tools"], L:2, I:5, mod:["mt"], c:[], alt:[["ID-3","DA-1"]], opt:["DA-5"], d:["DT-04","DT-09"], map:{llm:["LLM02"], asi:["ASI06"]}},
+  {id:"T26", dom:3, t:"Answers disclose sensitive data to the wrong person", s:"The model repeats personal or confidential data the reader should not see.", req:["data"], L:3, I:4, c:["DA-4"], alt:[["ID-3","DA-1"]], opt:["OUT-3"], d:["DT-04"], map:{llm:["LLM02"]}},
+  {id:"T27", dom:6, t:"Prompt and trace logs hold sensitive data", s:"Full prompts and tool traces end up in broadly readable logs that are kept for years.", req:["logging"], L:3, I:4, mod:["data"], c:["DA-6"], alt:[], opt:[], d:["DT-10"], map:{llm:["LLM02"]}},
+  {id:"T28", dom:6, t:"Model provider handles prompts outside agreed terms", s:"Prompts are kept, reviewed or used for training against your expectations or in the wrong region.", when:{host:["api","platform"]}, L:2, I:4, mod:["data"], c:["GOV-3"], alt:[], opt:["DA-4"], d:[], map:{llm:["LLM02"]}},
+  {id:"T29", dom:0, t:"System prompt or hidden context extracted", s:"A user gets the model to reveal its instructions, exposing logic, internal names or secrets.", L:4, I:2, mod:["exposed"], c:["IN-3"], alt:[], opt:["OBS-4"], d:["DT-01","DT-12"], map:{llm:["LLM08"], atlas:["AML.T0056"]}},
+  {id:"T30", dom:5, t:"Wrong but confident answers drive real decisions", s:"Users act on fabricated or outdated answers because they sound authoritative.", L:3, I:3, mod:["exposed"], c:["OUT-4"], alt:[], opt:["GOV-4"], d:[], map:{llm:["LLM07"], asi:["ASI09"]}, cases:[{t:"Air Canada (February 2024): a British Columbia tribunal held the airline to a bereavement refund its website chatbot described incorrectly.",u:"https://www.cbsnews.com/news/aircanada-chatbot-discount-customer"}]},
+  {id:"T31", dom:0, t:"Users manipulated through an assistant they trust", s:"Injected content makes the assistant push users to click, pay or disclose something.", req:["untrusted"], L:2, I:3, mod:["exposed"], c:["OUT-2"], alt:[["IN-1","GOV-4"]], opt:[], d:["DT-01"], map:{asi:["ASI09"]}},
+  {id:"T32", dom:6, t:"Runaway usage exhausts budget or capacity", s:"Loops, recursion or abuse burn tokens and API quota.", L:3, I:3, mod:["act","exposed"], c:["IN-4"], alt:[], opt:["TL-4"], d:["DT-11"], map:{llm:["LLM06"], atlas:["AML.T0034"]}},
+  {id:"T33", dom:1, t:"Messages between agents spoofed or carrying instructions", s:"One agent forges or injects into messages another agent trusts.", req:["multi"], L:3, I:4, c:["MA-1"], alt:[], opt:["ID-6","IN-1"], d:["DT-02"], map:{asi:["ASI07"]}},
+  {id:"T34", dom:2, t:"One agent's failure cascades through others", s:"A bad output from one agent is amplified as downstream agents act on it.", req:["multi"], L:3, I:4, mod:["act"], c:["TL-4"], alt:[["TL-8","MA-1"]], opt:[], d:["DT-19","DT-08"], map:{asi:["ASI08"]}},
+  {id:"T35", dom:6, t:"Prompts, config or tool lists changed without review", s:"A console edit widens tools or weakens rules with no record or approval.", L:3, I:4, c:["GOV-2"], alt:[], opt:[], d:["DT-13"], map:{asi:["ASI10"]}},
+  {id:"T36", dom:6, t:"Agents and MCP servers run with no inventory or owner", s:"Teams deploy agents and servers nobody tracks, so nobody patches or reviews them.", L:4, I:3, c:["GOV-1"], alt:[], opt:["SC-5"], d:["DT-14"], map:{asi:["ASI10"]}},
+  {id:"T37", dom:6, t:"Agent actions cannot be traced to a user, agent or input", s:"After an incident nobody can say which prompt, user or document caused an action.", req:["tools"], L:4, I:3, c:["OBS-1"], alt:[], opt:["OBS-2","OBS-3"], d:["DT-15"], map:{asi:["ASI10"]}},
+  {id:"T38", dom:4, t:"Flaws in the agent framework or platform exploited", s:"A vulnerable orchestration framework or low-code agent builder is reachable and exploitable.", L:3, I:5, c:["SC-5"], alt:[["SC-3","ID-2"]], opt:[], d:["DT-03","DT-12"], map:{llm:["LLM04"], asi:["ASI04"]}, cases:[{t:"Langflow (CVE-2025-3248): an unauthenticated code-validation endpoint allowed remote code execution; CISA added it to the KEV catalogue in May 2025.",u:"https://www.helpnetsecurity.com/2025/05/06/langflow-cve-2025-3248-exploited/"}]},
+  {id:"T39", dom:4, t:"Tampered model weights loaded", s:"A model file from a hub carries a backdoor or code that runs on load.", req:["selfhost"], L:2, I:5, c:["SC-6"], alt:[], opt:["SC-5"], d:[], map:{llm:["LLM04","LLM05"], atlas:["AML.T0010"]}},
+  {id:"T40", dom:0, t:"Browser or desktop agent hijacked by page content", s:"A page the agent visits carries instructions that make it click, type or submit on the user's behalf.", req:["browser"], L:4, I:5, mod:["act"], c:["TL-5"], alt:[["IN-1","TL-3"]], opt:["TL-7"], d:["DT-01","DT-03"], map:{llm:["LLM01"], asi:["ASI01"], atlas:["AML.T0051.001"]}},
+  {id:"T41", dom:1, t:"Account takeover hands an attacker someone's assistant", s:"Stolen sessions or crafted links let an attacker use the victim's agent and its access.", L:3, I:4, mod:["exposed"], c:["ID-1"], alt:[], opt:[], d:["DT-05"], map:{asi:["ASI03"]}},
+  {id:"T42", dom:1, t:"Agent identities and created resources never expire", s:"Old agent principals, tokens and the resources they made linger with live access.", req:["tools"], L:3, I:3, c:["ID-7"], alt:[], opt:["ID-5"], d:["DT-18"], map:{asi:["ASI03"]}}
 ];
 
 // Attack paths. Each stage lists threats an attacker could use there.
 const PATHS = [
-  // req/any/when gate the path on the profile before any stage is checked. Stages are prevention only; detection is reported separately.
-  {id:"AP-1", t:"Planted content steals data", req:["untrusted"], any:["data","rag"], needs:"untrusted content plus sensitive data or retrieval",
+  // from: where the path starts on the map. anchors: the component each stage plays out on.
+  // req/any/cond gate the path on the profile. Stages measure prevention only; detection is reported separately.
+  {id:"AP-1", t:"Planted content steals data", from:"atk", anchors:["ext","app","client"], req:["untrusted"], any:["data","rag"], needs:"untrusted content plus sensitive data or retrieval",
    stages:[["Plant instructions",["T02","T22","T24","T40"]],["Reach private data",["T26","T21","T09"]],["Get it out",["T08","T07","T14"]]]},
-  {id:"AP-2", t:"Injected instructions trigger an unauthorised action", req:["tools"], any:["untrusted","browser"], needs:"tool use plus untrusted content or browser use",
+  {id:"AP-2", t:"Injected instructions trigger an unauthorised action", from:"atk", anchors:["ext","orch","tools"], req:["tools"], any:["untrusted","browser"], needs:"tool use plus untrusted content or browser use",
    stages:[["Inject",["T02","T03","T40"]],["Agent holds the reach",["T15","T09"]],["Action passes the gate",["T17","T18"]]]},
-  {id:"AP-3", t:"Poisoned MCP supply chain", any:["mcp","plugins"], needs:"MCP servers or third-party plugins",
+  {id:"AP-3", t:"Poisoned MCP supply chain", from:"atk", anchors:["reg","mcp","tools"], any:["mcp","plugins"], needs:"MCP servers or third-party plugins",
    stages:[["Bad server installed or changed",["T06","T05","T04"]],["Server sees tokens or data",["T10","T12"]],["Data or action leaves",["T07","T14"]]]},
-  {id:"AP-4", t:"Cross-tenant tool execution", tAlt:"Cross-user tool execution through a shared gateway", req:["tools"], cond:p => p.audience === "multitenant" || p.feat.includes("mcp"), needs:"tool use plus a multi-tenant audience or a shared MCP gateway",
-   stages:[["Get a foothold account",["T41","T01"]],["Gateway skips authorisation",["T09","T11","T12"]],["Read another tenant's data",["T25","T26"],"Read another user's data"]]},
-  {id:"AP-5", t:"Coding agent to production credentials", req:["coding"], needs:"coding agents on workstations",
+  {id:"AP-4", t:"Cross-tenant tool execution", tAlt:"Cross-user tool execution through a shared gateway", from:"user", anchors:["mcp","app"], req:["tools"], cond:p => p.audience === "multitenant" || p.feat.includes("mcp"),
+   needs:"tool use plus a multi-tenant audience or a shared MCP gateway", origin:"any signed-in user, no attacker skill needed",
+   stages:[["Gateway skips authorisation",["T09","T11","T12"]],["Read another tenant's data",["T25","T26"],"Read another user's data"]]},
+  {id:"AP-5", t:"Coding agent to production credentials", from:"atk", anchors:["repo","ws","ws"], req:["coding"], needs:"coding agents on workstations",
    stages:[["Injected repo or issue content",["T02","T03"]],["Agent runs with developer rights",["T20","T19","T18"]],["Credentials leave or persist",["T07","T42"]]]},
-  {id:"AP-6", t:"Memory poisoning that keeps firing", req:["memory"], any:["untrusted"], needs:"persistent memory plus untrusted content",
-   stages:[["Inject",["T02","T31"]],["Written to memory",["T24"]],["Fires for later sessions or users",["T25","T26"]]]}
+  {id:"AP-6", t:"Memory poisoning that keeps firing", from:"atk", anchors:["ext","mem","client"], req:["memory"], any:["untrusted"], needs:"persistent memory plus untrusted content",
+   stages:[["Inject",["T02","T31"]],["Written to memory",["T24"]],["Fires for later sessions or users",["T25","T26"]]]},
+  {id:"AP-7", t:"Agent does damage with no attacker", from:"user", anchors:["orch","tools"], req:["tools"], needs:"tool use", origin:"an ordinary request, no attacker involved",
+   stages:[["Agent misreads the task",["T16","T30"]],["It has the reach to act",["T15"]]]}
 ];
 
 const FRAMEWORKS = {
-  llm: {name:"OWASP Top 10 for LLM Applications (2025 IDs)", items:{LLM01:"Prompt injection",LLM02:"Sensitive information disclosure",LLM03:"Supply chain",LLM04:"Data and model poisoning",LLM05:"Improper output handling",LLM06:"Excessive agency",LLM07:"System prompt leakage",LLM08:"Vector and embedding weaknesses",LLM09:"Misinformation",LLM10:"Unbounded consumption"}},
-  asi: {name:"OWASP Top 10 for Agentic Applications 2026", items:{ASI01:"Agent goal hijack",ASI02:"Tool misuse and exploitation",ASI03:"Identity and privilege abuse",ASI04:"Agentic supply chain",ASI05:"Unexpected code execution",ASI06:"Memory and context poisoning",ASI07:"Insecure inter-agent communication",ASI08:"Cascading failures",ASI09:"Human-agent trust exploitation",ASI10:"Rogue agents"}},
-  atlas: {name:"MITRE ATLAS techniques", items:{"AML.T0051.000":"LLM prompt injection: direct","AML.T0051.001":"LLM prompt injection: indirect","AML.T0054":"LLM jailbreak","AML.T0056":"Extract LLM system prompt","AML.T0057":"LLM data leakage","AML.T0070":"RAG poisoning","AML.T0077":"LLM response rendering","AML.T0010":"AI supply chain compromise","AML.T0034":"Cost harvesting"}},
-  mcp: {name:"MCP security best practices and CoSAI MCP paper", items:{"Confused deputy":"Confused deputy","Token passthrough":"Token passthrough","SSRF":"Server-side request forgery","Local server compromise":"Local MCP server compromise","Authorization URL validation":"OAuth authorization URL validation","CoSAI MCP-T1":"Improper authentication and identity","CoSAI MCP-T8":"Network binding and isolation failures"}}
+  llm: {name:"OWASP Top 10 for LLM Applications 2026", url:"https://genai.owasp.org/llm-top-10/", items:{LLM01:"Prompt injection",LLM02:"Sensitive information disclosure",LLM03:"Excessive agency",LLM04:"Supply chain",LLM05:"Data and model poisoning",LLM06:"Unbounded consumption",LLM07:"Misinformation",LLM08:"Hidden context exposure",LLM09:"Vector and embedding weaknesses",LLM10:"Improper output handling"}},
+  asi: {name:"OWASP Top 10 for Agentic Applications 2026", url:"https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/", items:{ASI01:"Agent goal hijack",ASI02:"Tool misuse and exploitation",ASI03:"Identity and privilege abuse",ASI04:"Agentic supply chain vulnerabilities",ASI05:"Unexpected code execution (RCE)",ASI06:"Memory and context poisoning",ASI07:"Insecure inter-agent communication",ASI08:"Cascading failures",ASI09:"Human-agent trust exploitation",ASI10:"Rogue agents"}},
+  atlas: {name:"MITRE ATLAS techniques", url:"https://atlas.mitre.org/techniques", items:{"AML.T0051.000":"LLM prompt injection: direct","AML.T0051.001":"LLM prompt injection: indirect","AML.T0054":"LLM jailbreak","AML.T0056":"Extract LLM system prompt","AML.T0057":"LLM data leakage","AML.T0070":"RAG poisoning","AML.T0077":"LLM response rendering","AML.T0010":"AI supply chain compromise","AML.T0034":"Cost harvesting"}},
+  mcp: {name:"MCP security best practices and CoSAI MCP paper", url:"https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices", items:{"Confused deputy":"Confused deputy","Token passthrough":"Token passthrough","SSRF":"Server-side request forgery","Local server compromise":"Local MCP server compromise","Authorization URL validation":"OAuth authorization URL validation","CoSAI MCP-T1":"Improper authentication and identity","CoSAI MCP-T8":"Network binding and isolation failures"}}
 };
 
 // Overreach outcome -> threats it demonstrates. Boundary text adds more.
@@ -500,174 +519,262 @@ const KEYWORD_RULES = [
   [/pii|sensitive data|secret/i, ["T26"]], [/system prompt/i, ["T29"]], [/cost|denial of wallet|quota/i, ["T32"]]
 ];
 
-// ---------- state ----------
-const LS_KEY = "bwd-atw-v1";
+// Pure model: no DOM. Used by the page and by the tests.
+const SCHEMA = 2;
 const LEVELS = ["Not in place", "Partial", "Implemented", "Verified"];
-const BAND_W = {Critical:4, High:3, Medium:2, Low:1};
-let S = null; // state
-let UI = {profOpen: !(window.matchMedia && matchMedia("(max-width: 980px)").matches), tab:"overview", open:{}, threatFilter:{scope:"applicable", outstanding:false, dom:"all", q:""}, ctrlAll:false};
+const DEFAULT_WEIGHTS = {
+  act: 1,          // likelihood change for action threats when the agent acts on its own (and -1 when it only suggests)
+  exposed: 1,      // likelihood change for exposure threats when users are outside the company
+  data: 1,         // impact change for data threats when sensitive data is in scope
+  mt: 2,           // likelihood change for tenant threats in a multi-tenant service
+  bands: [20, 12, 6], // score thresholds for Critical, High, Medium (score = likelihood x impact)
+  rank: {Critical: 4, High: 3, Medium: 2, Low: 1}, // weight of an outstanding threat when ranking controls
+  altShare: 0.5,   // share of that weight a control earns when it is one of several alternatives
+  path: 3,         // bonus per open path where the control sits on the stage with the fewest missing controls
+  prio: true       // add a small bonus for P1 over P2 over P3
+};
 
-function blankState(){
-  return {profile:{host:"api", autonomy:"approve", audience:"internal", feat:[]}, ctrl:{}, det:{}, accept:{}, findings:[], snapshots:[], example:false};
-}
-function exampleState(){
-  const s = blankState();
-  s.example = true;
-  s.profile = {host:"api", autonomy:"approve", audience:"internal", feat:["data","rag","untrusted","tools","mcp","logging"]};
-  s.ctrl = {
-    "ID-1":{lvl:3, owner:"IAM team", evidence:"Conditional access policy CA-07 requires MFA for the assistant app; session lifetime 8h. Reviewed 2026-10."},
-    "TL-1":{lvl:2, owner:"Platform", evidence:"Tool allow-list per agent in agents.yaml"},
-    "OUT-2":{lvl:2, owner:"Frontend", evidence:""},
-    "IN-3":{lvl:3, owner:"AppSec", evidence:""},
-    "GOV-1":{lvl:1, owner:"Architecture", evidence:"Spreadsheet covers agents, not MCP servers yet"},
-    "DA-6":{lvl:1, owner:"SRE", evidence:""},
-    "SC-3":{lvl:1, owner:"Platform", evidence:"Gateway in container, two servers still bind 0.0.0.0"}
-  };
-  s.det = {"DT-01":true, "DT-03":true};
-  s.accept = {"T28":{owner:"CISO office", reason:"Zero-retention contract in place; residual accepted for 12 months", expiry:"2027-11-01"}};
-  s.findings = importAny(SAMPLE_OVERREACH, "overreach-sample.json");
-  return s;
-}
-function load(){
-  try { const raw = localStorage.getItem(LS_KEY); if (raw){ const v = JSON.parse(raw); if (v && v.profile) return Object.assign(blankState(), v); } } catch(e){}
-  return exampleState();
-}
-function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} }
-
-// ---------- helpers ----------
-const $ = (q, r=document) => r.querySelector(q);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const CTRL = Object.fromEntries(CONTROLS.map(c => [c.id, c]));
 const THR = Object.fromEntries(THREATS.map(t => [t.id, t]));
 const DET = Object.fromEntries(DETECTIONS.map(d => [d[0], d]));
-const famOf = id => id.split("-")[0];
-const band = sc => sc >= 20 ? "Critical" : sc >= 12 ? "High" : sc >= 6 ? "Medium" : "Low";
-const clamp = v => Math.max(1, Math.min(5, v));
 
-function ctrlLevel(id){
+function blankState(){
+  return {v: SCHEMA, profile: {host: "api", autonomy: "approve", audience: "internal", feat: []}, ctrl: {}, det: {}, accept: {}, findings: [], snapshots: [], weights: null, example: false};
+}
+
+function migrate(s){
+  if (!s || typeof s !== "object" || !s.profile) return null;
+  const out = Object.assign(blankState(), s);
+  if (!s.v || s.v < 2){
+    // v1 findings had no mapping provenance; they came from Overreach outcomes or explicit lists, so treat them as confirmed.
+    out.findings = (s.findings || []).map(f => Object.assign({mapBy: "outcome", confirmed: true}, f));
+  }
+  out.v = SCHEMA;
+  return out;
+}
+
+function weightsOf(S){ return Object.assign({}, DEFAULT_WEIGHTS, S.weights || {}, {rank: Object.assign({}, DEFAULT_WEIGHTS.rank, (S.weights || {}).rank || {})}); }
+
+function ctrlLevelOf(S, id){
   const c = S.ctrl[id]; if (!c) return 0;
-  if (c.lvl === 3 && !String(c.evidence||"").trim()) return 2; // verified needs evidence
+  if (c.lvl === 3 && !String(c.evidence || "").trim()) return 2; // Verified needs written evidence
   return c.lvl || 0;
 }
 
-// ---------- model ----------
-function compute(){
-  const p = S.profile, F = new Set(p.feat);
-  const M = {threats:{}, ctrlNeed:{}, paths:[], findingsByThreat:{}};
-  for (const f of S.findings) for (const tid of f.threats) (M.findingsByThreat[tid] ||= []).push(f);
+// Which controls a threat still needs: every required one, plus one from each unsatisfied group of alternatives.
+function missingFor(S, t){
+  const req = t.c.filter(c => ctrlLevelOf(S, c) < 2);
+  const groups = (t.alt || []).filter(g => Math.max(...g.map(c => ctrlLevelOf(S, c))) < 2);
+  return {req, groups, count: req.length + groups.length};
+}
+
+function threatStatus(S, t){
+  const lv = [...t.c.map(c => ctrlLevelOf(S, c)), ...(t.alt || []).map(g => Math.max(...g.map(c => ctrlLevelOf(S, c))))];
+  const touched = [...t.c, ...(t.alt || []).flat()].some(c => ctrlLevelOf(S, c) > 0);
+  if (!lv.length) return "Open";
+  const min = Math.min(...lv);
+  return min >= 3 ? "Verified" : min >= 2 ? "Mitigated" : touched ? "Partial" : "Open";
+}
+
+function applies(t, p){
+  const F = new Set(p.feat);
+  if (t.req && !t.req.every(k => F.has(k))) return false;
+  if (t.any && !t.any.some(k => F.has(k))) return false;
+  if (t.when) for (const k in t.when) if (!t.when[k].includes(p[k])) return false;
+  return true;
+}
+
+function compute(S){
+  const p = S.profile, F = new Set(p.feat), W = weightsOf(S);
+  const band = sc => sc >= W.bands[0] ? "Critical" : sc >= W.bands[1] ? "High" : sc >= W.bands[2] ? "Medium" : "Low";
+  const clamp = v => Math.max(1, Math.min(5, v));
+  const M = {threats: {}, ctrlNeed: {}, paths: [], findingsByThreat: {}, W};
+  for (const f of S.findings) if (f.confirmed !== false) for (const tid of f.threats) (M.findingsByThreat[tid] ||= []).push(f);
 
   for (const t of THREATS){
-    let applies = true, why = [];
-    if (t.req && !t.req.every(k => F.has(k))) applies = false;
-    if (t.any && !t.any.some(k => F.has(k))) applies = false;
-    if (t.when) for (const k in t.when) if (!t.when[k].includes(p[k])) applies = false;
-    let L = t.L, I = t.I;
-    const mod = t.mod || [];
-    if (mod.includes("act") && p.autonomy === "auto"){ L++; why.push("Acts on its own: likelihood +1"); }
-    if (mod.includes("act") && p.autonomy === "suggest"){ L--; why.push("Suggests only: likelihood -1"); }
-    if (mod.includes("exposed") && p.audience !== "internal"){ L++; why.push("Outside users: likelihood +1"); }
-    if (mod.includes("data") && F.has("data")){ I++; why.push("Sensitive data: impact +1"); }
-    if (mod.includes("mt") && p.audience === "multitenant"){ L += 2; why.push("Multi-tenant: likelihood +2"); }
+    const ap = applies(t, p);
+    let L = t.L, I = t.I; const why = [], mod = t.mod || [];
+    if (mod.includes("act") && p.autonomy === "auto" && W.act){ L += W.act; why.push(`Acts on its own: likelihood +${W.act}`); }
+    if (mod.includes("act") && p.autonomy === "suggest" && W.act){ L -= W.act; why.push(`Suggests only: likelihood -${W.act}`); }
+    if (mod.includes("exposed") && p.audience !== "internal" && W.exposed){ L += W.exposed; why.push(`Outside users: likelihood +${W.exposed}`); }
+    if (mod.includes("data") && F.has("data") && W.data){ I += W.data; why.push(`Sensitive data: impact +${W.data}`); }
+    if (mod.includes("mt") && p.audience === "multitenant" && W.mt){ L += W.mt; why.push(`Multi-tenant: likelihood +${W.mt}`); }
     L = clamp(L); I = clamp(I);
     const score = L * I, risk = band(score);
-    const lv = t.c.map(ctrlLevel);
-    const min = Math.min(...lv), any = lv.some(v => v > 0);
-    let status = min >= 3 ? "Verified" : min >= 2 ? "Mitigated" : any ? "Partial" : "Open";
-    const accepted = !!S.accept[t.id] && status !== "Mitigated" && status !== "Verified";
-    if (accepted) status = "Accepted";
+    let status = threatStatus(S, t);
+    if (S.accept[t.id] && status !== "Mitigated" && status !== "Verified") status = "Accepted";
     const fs = M.findingsByThreat[t.id] || [];
-    const proven = fs.some(f => f.grade === "proven"), reach = fs.length > 0;
-    const conflict = (status === "Mitigated" || status === "Verified") && proven;
-    const outstanding = applies && !(status === "Mitigated" || status === "Verified");
-    const detDeployed = t.d.filter(d => S.det[d]).length;
-    M.threats[t.id] = {applies, L, I, score, risk, why, status, outstanding, proven, reach, conflict, findings:fs, detDeployed};
-    if (applies) for (const c of t.c) (M.ctrlNeed[c] ||= []).push(t.id);
+    const proven = fs.some(f => f.grade === "proven");
+    const outstanding = ap && !(status === "Mitigated" || status === "Verified");
+    M.threats[t.id] = {applies: ap, L, I, score, risk, why, status, outstanding, proven, reach: fs.length > 0,
+      conflict: (status === "Mitigated" || status === "Verified") && proven, findings: fs,
+      missing: missingFor(S, t), detDeployed: t.d.filter(d => S.det[d]).length};
+    if (ap) [...t.c, ...(t.alt || []).flat(), ...(t.opt || [])].forEach(c => { (M.ctrlNeed[c] ||= []).includes(t.id) || M.ctrlNeed[c].push(t.id); });
   }
-  // paths
+
   for (const ap of PATHS){
     const gate = (!ap.req || ap.req.every(k => F.has(k))) && (!ap.any || ap.any.some(k => F.has(k))) && (!ap.cond || ap.cond(p));
     const mt = p.audience === "multitenant";
     const title = (!mt && ap.tAlt) ? ap.tAlt : ap.t;
-    const stages = ap.stages.map(([name0, ids, nameAlt]) => {
+    const stages = ap.stages.map(([name0, ids, nameAlt], i) => {
       const name = (!mt && nameAlt) ? nameAlt : name0;
       const app = ids.filter(id => M.threats[id].applies);
       const blocked = app.length > 0 && app.every(id => !M.threats[id].outstanding);
-      const missing = new Set();
-      app.forEach(id => THR[id].c.forEach(c => { if (ctrlLevel(c) < 2) missing.add(c); }));
-      const evidence = app.some(id => M.threats[id].reach);
-      return {name, ids, app, blocked, missing:[...missing], evidence};
+      const req = new Set(), groups = [];
+      app.forEach(id => { const m = M.threats[id].missing; m.req.forEach(c => req.add(c)); m.groups.forEach(g => { if (!groups.some(x => x.join() === g.join())) groups.push(g); }); });
+      // a group already covered by a required control on the same stage needs nothing extra
+      const openGroups = groups.filter(g => !g.some(c => req.has(c)));
+      return {name, ids, app, blocked, missing: [...req], missingGroups: openGroups, cost: req.size + openGroups.length,
+        evidence: app.some(id => M.threats[id].reach), anchor: (ap.anchors || [])[i]};
     });
-    const applies = gate && stages.every(s => s.app.length > 0);
-    const dets = [...new Set(stages.flatMap(s => s.app.flatMap(id => THR[id].d)))];
-    const detOn = dets.filter(d => S.det[d]);
-    const blocked = applies && stages.some(s => s.blocked);
+    const isApplicable = gate && stages.every(s => s.app.length > 0);
+    const blocked = isApplicable && stages.some(s => s.blocked);
     let cheapest = null;
-    if (applies && !blocked) cheapest = stages.reduce((a, s, i) => (a === null || s.missing.length < stages[a].missing.length) ? i : a, null);
-    M.paths.push({...ap, t:title, gate, stages, applies, blocked, cheapest, dets, detOn, evidenceStages: stages.filter(s => s.evidence).length});
+    if (isApplicable && !blocked) cheapest = stages.reduce((a, s, i) => (a === null || s.cost < stages[a].cost) ? i : a, null);
+    const dets = [...new Set(stages.flatMap(s => s.app.flatMap(id => THR[id].d)))];
+    M.paths.push({...ap, t: title, gate, stages, applies: isApplicable, blocked, cheapest, dets, detOn: dets.filter(d => S.det[d]),
+      evidenceStages: stages.filter(s => s.evidence).length});
   }
-  // leverage
+
+  // Rank controls that are not yet Implemented by how much outstanding risk they would help close.
   const lev = [];
   for (const cid in M.ctrlNeed){
-    if (ctrlLevel(cid) >= 2) continue;
-    const ts = M.ctrlNeed[cid].filter(id => M.threats[id].outstanding);
+    if (ctrlLevelOf(S, cid) >= 2) continue;
+    let w = 0; const ts = [];
+    for (const id of M.ctrlNeed[cid]){
+      const m = M.threats[id]; if (!m.outstanding) continue;
+      if (m.missing.req.includes(cid)){ w += W.rank[m.risk]; ts.push(id); }
+      else if (m.missing.groups.some(g => g.includes(cid))){ w += W.rank[m.risk] * W.altShare; ts.push(id); }
+    }
     if (!ts.length) continue;
-    const w = ts.reduce((a, id) => a + BAND_W[M.threats[id].risk], 0);
-    const pathBreaks = M.paths.filter(p => p.applies && !p.blocked && p.cheapest !== null && p.stages[p.cheapest].missing.includes(cid)).length;
-    lev.push({cid, ts, w, pathBreaks, score: w + pathBreaks * 3 + (4 - CTRL[cid].p)});
+    const pathBreaks = M.paths.filter(p => p.applies && !p.blocked && p.cheapest !== null &&
+      (p.stages[p.cheapest].missing.includes(cid) || p.stages[p.cheapest].missingGroups.some(g => g.includes(cid)))).length;
+    const prio = W.prio ? (4 - CTRL[cid].p) * 0.1 : 0;
+    lev.push({cid, ts, w, pathBreaks, score: w + pathBreaks * W.path + prio});
   }
   lev.sort((a, b) => b.score - a.score || a.cid.localeCompare(b.cid));
   M.leverage = lev;
-  const app = THREATS.filter(t => M.threats[t.id].applies);
-  M.app = app;
-  M.count = (fn) => app.filter(t => fn(M.threats[t.id])).length;
+  M.app = THREATS.filter(t => M.threats[t.id].applies);
+  M.count = fn => M.app.filter(t => fn(M.threats[t.id])).length;
   return M;
 }
 
 // ---------- findings import ----------
-function threatsFromText(txt){
-  const out = new Set();
-  for (const [re, ids] of KEYWORD_RULES) if (re.test(txt)) ids.forEach(i => out.add(i));
-  return out;
-}
-function gradeOf(ev){ ev = String(ev||"").toLowerCase(); return ev === "validated" ? "proven" : ev === "simulated" ? "simulated" : ev === "hypothetical" ? "reachable" : "reported"; }
+function gradeOf(ev){ ev = String(ev || "").toLowerCase(); return ev === "validated" ? "proven" : ev === "simulated" ? "simulated" : ev === "hypothetical" ? "reachable" : "reported"; }
+function boundaryThreats(bs){ const ts = new Set(); (bs || []).forEach(b => BOUNDARY_RULES.forEach(([re, ids]) => { if (re.test(b)) ids.forEach(i => ts.add(i)); })); return ts; }
+function keywordThreats(txt){ const ts = new Set(); for (const [re, ids] of KEYWORD_RULES) if (re.test(txt)) ids.forEach(i => ts.add(i)); return ts; }
+
 function importAny(obj, source){
   const out = [];
-  const add = (f) => { f.threats = [...new Set(f.threats)].filter(id => THR[id]); f.source = source; f.key = f.tool + ":" + f.id; out.push(f); };
+  const add = f => { f.threats = [...new Set(f.threats)].filter(id => THR[id]); f.source = source; f.key = f.tool + ":" + f.id; if (f.confirmed === undefined) f.confirmed = f.mapBy !== "keyword"; out.push(f); };
   if (obj && Array.isArray(obj.chains)){ // Overreach JSON
     for (const c of obj.chains){
-      const ts = new Set(OVERREACH_MAP[c.outcome] || []);
-      (c.boundaries || []).forEach(b => BOUNDARY_RULES.forEach(([re, ids]) => { if (re.test(b)) ids.forEach(i => ts.add(i)); }));
-      add({tool:"overreach", id:c.id, title:(c.outcome||"").replace(/_/g," ") + " via " + ((c.steps||[]).slice(-1)[0]?.op || "?"),
-        grade:gradeOf(c.evidence), evidence:c.evidence, impact:c.impact, detail:(c.steps||[]).map(s => s.op).join("  >  "), notes:c.boundaries||[], threats:[...ts]});
+      const ts = new Set(OVERREACH_MAP[c.outcome] || []); boundaryThreats(c.boundaries).forEach(i => ts.add(i));
+      add({tool: "overreach", id: c.id, title: (c.outcome || "").replace(/_/g, " ") + " via " + ((c.steps || []).slice(-1)[0]?.op || "?"),
+        grade: gradeOf(c.evidence), evidence: c.evidence, impact: c.impact, detail: (c.steps || []).map(s => s.op).join("  >  "), notes: c.boundaries || [], threats: [...ts], mapBy: "outcome"});
     }
     return out;
   }
-  if (obj && Array.isArray(obj.runs)){ // SARIF
+  if (obj && Array.isArray(obj.runs)){ // SARIF 2.1.0
     for (const run of obj.runs){
       const tool = run.tool?.driver?.name || "sarif";
       for (const r of run.results || []){
-        const pr = r.properties || {};
-        let ts = new Set();
-        const outcome = (r.ruleId||"").split("/").pop();
-        if (tool === "overreach" && OVERREACH_MAP[outcome]){ OVERREACH_MAP[outcome].forEach(i => ts.add(i)); (pr.boundaries||[]).forEach(b => BOUNDARY_RULES.forEach(([re, ids]) => { if (re.test(b)) ids.forEach(i => ts.add(i)); })); }
+        const pr = r.properties || {}; let ts = new Set(); let mapBy = "explicit";
+        const outcome = (r.ruleId || "").split("/").pop();
         (pr.threats || pr.atw_threats || []).forEach(i => ts.add(i));
-        if (!ts.size) ts = threatsFromText([r.ruleId, r.message?.text, ...(pr.tags||[])].join(" "));
-        add({tool, id:r.partialFingerprints ? Object.values(r.partialFingerprints)[0] : (r.ruleId + "-" + out.length), title:r.ruleId || "result",
-          grade:gradeOf(pr.evidence), evidence:pr.evidence || r.level || "", impact:pr.impact, detail:(pr.path||[]).join("  >  ") || (r.message?.text||"").slice(0,240), notes:[], threats:[...ts]});
+        if (!ts.size && tool === "overreach" && OVERREACH_MAP[outcome]){ OVERREACH_MAP[outcome].forEach(i => ts.add(i)); boundaryThreats(pr.boundaries).forEach(i => ts.add(i)); mapBy = "outcome"; }
+        // Keyword matching only looks at the rule id and tags, never free text, and is only a suggestion.
+        if (!ts.size){ ts = keywordThreats([r.ruleId, ...(pr.tags || [])].join(" ")); mapBy = "keyword"; }
+        add({tool, id: r.partialFingerprints ? Object.values(r.partialFingerprints)[0] : (r.ruleId + "-" + out.length), title: r.ruleId || "result",
+          grade: gradeOf(pr.evidence), evidence: pr.evidence || r.level || "", impact: pr.impact, detail: (pr.path || []).join("  >  ") || (r.message?.text || "").slice(0, 240), notes: [], threats: [...ts], mapBy});
       }
     }
     return out;
   }
   const list = Array.isArray(obj) ? obj : Array.isArray(obj?.findings) ? obj.findings : null;
-  if (list){ // generic
+  if (list){
     list.forEach((f, i) => {
-      const ts = new Set(f.threats || (f.threat ? [f.threat] : []));
-      if (!ts.size) threatsFromText([f.title, f.description, ...(f.tags||[])].join(" ")).forEach(x => ts.add(x));
-      add({tool:f.tool || obj.tool || "findings", id:f.id || ("F" + (i+1)), title:f.title || "finding", grade:gradeOf(f.evidence), evidence:f.evidence || "", impact:f.impact, detail:f.description || "", notes:f.tags||[], threats:[...ts]});
+      let ts = new Set(f.threats || (f.threat ? [f.threat] : [])), mapBy = "explicit";
+      if (!ts.size){ ts = keywordThreats([f.title, ...(f.tags || [])].join(" ")); mapBy = "keyword"; }
+      add({tool: f.tool || obj.tool || "findings", id: f.id || ("F" + (i + 1)), title: f.title || "finding", grade: gradeOf(f.evidence), evidence: f.evidence || "", impact: f.impact, detail: f.description || "", notes: f.tags || [], threats: [...ts], mapBy});
     });
     return out;
   }
   throw new Error("Not recognised. Expected Overreach JSON, SARIF 2.1.0, or {\"findings\": [...]}.");
+}
+
+// ---------- profile in a link ----------
+const FEATURE_KEYS = () => FEATURES.map(f => f[0]);
+function profileToQuery(p, extra){
+  const q = new URLSearchParams({h: p.host, a: p.autonomy, u: p.audience, f: p.feat.join(",")});
+  if (extra) for (const k in extra) if (extra[k]) q.set(k, extra[k]);
+  return q.toString();
+}
+function profileFromQuery(qs){
+  const q = new URLSearchParams(qs); if (!q.has("h") && !q.has("f")) return null;
+  const pick = (v, list, d) => list.some(x => x[0] === v) ? v : d;
+  const keys = FEATURE_KEYS();
+  return {host: pick(q.get("h"), HOSTING, "api"), autonomy: pick(q.get("a"), AUTONOMY, "approve"), audience: pick(q.get("u"), AUDIENCE, "internal"),
+    feat: (q.get("f") || "").split(",").filter(k => keys.includes(k)), path: q.get("path") || "", view: q.get("view") || ""};
+}
+
+
+// ---------- state ----------
+const LS_KEY = "bwd-atw-v1";
+const ANALYTICS_TOKEN = ""; // Cloudflare Web Analytics token. Empty = no analytics at all.
+let S = null; // state
+let UI = {profOpen: !(window.matchMedia && matchMedia("(max-width: 980px)").matches), tab:"overview", open:{}, threatFilter:{scope:"applicable", outstanding:false, dom:"all", q:""}, ctrlAll:false};
+
+// Example: a mid-maturity internal assistant. Some paths are already broken; others are not.
+function exampleState(){
+  const s = blankState();
+  s.example = true;
+  s.profile = {host:"api", autonomy:"approve", audience:"internal", feat:["data","rag","untrusted","tools","mcp","logging"]};
+  const ev = (lvl, owner, evidence="") => ({lvl, owner, evidence});
+  s.ctrl = {
+    "ID-1": ev(3, "IAM", "Conditional access requires MFA for the assistant app; session lifetime 8h. Reviewed 2026-10."),
+    "IN-3": ev(3, "AppSec", "System prompt reviewed 2026-10: no keys, tokens or access rules. Extraction test passed."),
+    "OUT-2": ev(3, "Frontend", "Renderer strips remote images; CSP img-src self. Pen test 2026-09 confirmed no image exfil."),
+    "GOV-3": ev(3, "Legal and procurement", "Zero data retention enabled in the provider console; EU region; DPA signed 2026-03."),
+    "TL-1": ev(2, "Platform", "Per-agent tool allow-list in agents.yaml"),
+    "ID-2": ev(2, "Platform", "One service principal per agent with scoped roles"),
+    "TL-2": ev(2, "Platform", "OPA policy check in the tool gateway"),
+    "TL-4": ev(2, "Platform"), "TL-5": ev(2, "Product"), "OUT-1": ev(2, "AppSec"), "DA-1": ev(2, "Data platform"),
+    "GOV-1": ev(2, "Architecture"), "GOV-2": ev(2, "Platform"), "OBS-1": ev(2, "SRE"), "IN-4": ev(2, "Platform"),
+    "ID-3": ev(1, "Platform", "Retrieval runs as the user; tool calls still use the agent identity"),
+    "IN-1": ev(1, "AppSec", "Provenance tags on retrieved content; no quarantine yet"),
+    "DA-4": ev(1, "Data protection"), "SC-1": ev(1, "Platform"), "SC-3": ev(1, "Platform", "Gateway in a container; two servers still bind 0.0.0.0"),
+    "DA-6": ev(1, "SRE"), "OUT-4": ev(1, "Product")
+  };
+  s.det = {"DT-01":true, "DT-03":true, "DT-08":true, "DT-13":true};
+  s.accept = {"T23":{owner:"CISO office", reason:"Vector store sits in the same restricted VPC as its sources; residual accepted until the Q2 re-architecture", expiry:"2027-06-30"}};
+  s.findings = importAny(SAMPLE_OVERREACH, "overreach-sample.json");
+  return s;
+}
+function load(){
+  let st = null;
+  try { const raw = localStorage.getItem(LS_KEY); if (raw) st = migrate(JSON.parse(raw)); } catch(e){}
+  st = st || exampleState();
+  const q = profileFromQuery(location.search);
+  if (q){ st.profile = {host:q.host, autonomy:q.autonomy, audience:q.audience, feat:q.feat}; if (q.view) UI.tab = q.view; if (q.path) UI.mapPath = q.path; }
+  return st;
+}
+function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} }
+function shareLink(extra){
+  const base = (location.protocol.startsWith("http") && !/claude|claudeusercontent/.test(location.hostname)) ? location.origin + location.pathname : "https://bogdanticu88.github.io/agent-threat-workbench/";
+  return base + "?" + profileToQuery(S.profile, extra);
+}
+if (ANALYTICS_TOKEN){ document.addEventListener("DOMContentLoaded", () => { const n = document.getElementById("privacy-note"); if (n) n.textContent = "Your answers stay in this browser. The page counts visits with Cloudflare Web Analytics, which sets no cookies and never sees what you enter."; }); const sc = document.createElement("script"); sc.defer = true; sc.src = "https://static.cloudflareinsights.com/beacon.min.js"; sc.setAttribute("data-cf-beacon", JSON.stringify({token: ANALYTICS_TOKEN})); document.head.appendChild(sc); }
+
+// ---------- helpers ----------
+const $ = (q, r=document) => r.querySelector(q);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const famOf = id => id.split("-")[0];
+const ctrlLevel = id => ctrlLevelOf(S, id);
+// "TL-2, one of IN-1 / TL-3"
+function missingText(m, html){
+  const w = id => html ? `<span class="mono">${id}</span>` : id;
+  return [...m.req.map(w), ...m.groups.map(g => "one of " + g.map(w).join(" / "))].join(", ");
 }
 
 // ---------- render: profile ----------
@@ -686,6 +793,7 @@ function renderProfile(M){
   }
   $("#profile").innerHTML = `
     <div class="prof-mini"><h2 class="side-h">Deployment profile</h2><button type="button" class="prof-toggle" data-act="proftoggle" aria-expanded="true">Done</button></div>
+    <button type="button" class="prof-link" data-act="copylink">Copy link to this profile</button><span id="link-msg" class="small side-sum" role="status"></span>
     <p class="side-sum"><b>${M.app.length}</b> of ${THREATS.length} threats apply</p>
     <label class="lbl">Model hosting</label>${seg("host", HOSTING, p.host)}
     <label class="lbl">Autonomy</label>${seg("autonomy", AUTONOMY, p.autonomy)}
@@ -735,7 +843,7 @@ function renderOverview(M){
         <div class="small muted">${proven} threats proven, ${reach} with any evidence${conflicts.length ? `<br><b class="t-crit">${conflicts.length} marked mitigated but proven exploitable</b>` : ""}</div></div>
     </div>
     <h3>Do these first</h3>
-    <p class="muted small">Ranked by the weight of outstanding threats each control would help close (Critical 4, High 3, Medium 2, Low 1), plus 3 for every open attack path where it sits on the stage with the fewest missing controls. This counts controls, not effort or cost. One control alone may not close a threat.</p>
+    <p class="muted small">Ranked by the outstanding risk each control would help close, plus a bonus for sitting on the easiest stage of an open attack path. It counts controls, not effort or cost. <a href="#report" data-act="tab" data-v="report">See the method and change the weights</a>. One control alone may not close a threat.</p>
     <ol class="lev">${M.leverage.slice(0, 7).map(l => `
       <li><button type="button" class="ctl-link" data-act="goctrl" data-id="${l.cid}"><span class="mono">${l.cid}</span> ${esc(CTRL[l.cid].t)}</button>
       <span class="small muted">P${CTRL[l.cid].p} · ${l.ts.length} threats (${l.ts.map(id => `<span class="mono">${id}</span>`).join(", ")})${l.pathBreaks ? ` · breaks ${l.pathBreaks} path${l.pathBreaks>1?"s":""}` : ""} · now: ${LEVELS[ctrlLevel(l.cid)]}</span></li>`).join("") || "<li>Nothing outstanding.</li>"}</ol>
@@ -788,12 +896,15 @@ function threatDetail(t, m){
     ${!m.applies ? `<p class="muted small">Does not apply: needs ${[...(t.req||[]).map(k => FEATURES.find(f => f[0]===k)[1]), ...(t.any ? ["one of " + t.any.map(k => FEATURES.find(f => f[0]===k)[1]).join(", ")] : []), ...(t.when ? Object.entries(t.when).map(([k,v]) => k + ": " + v.join("/")) : [])].join(" + ")}.</p>` : ""}
     <p class="small muted">Base L${t.L} × I${t.I}. ${m.why.length ? m.why.join(". ") + "." : "No profile adjustment."} Controls never lower this rating; they change the status.</p>
     <div class="det-grid">
-      <div><h4>Controls required (all must be Implemented)</h4>
-        ${t.c.map(cid => ctrlInline(cid, t.id)).join("")}</div>
+      <div>
+        ${t.c.length ? `<h4>Required: all of these</h4>${t.c.map(cid => ctrlInline(cid, t.id)).join("")}` : ""}
+        ${(t.alt || []).map((g, gi) => `<h4>Plus one of these</h4><div class="grp">${g.map(cid => ctrlInline(cid, t.id + "g" + gi)).join("")}</div>`).join("")}
+        ${(t.opt || []).length ? `<h4>Also helps, not required</h4>${t.opt.map(cid => ctrlInline(cid, t.id + "o")).join("")}` : ""}
+        <p class="small muted">${m.missing.count ? `Still needed: ${missingText(m.missing, true)}.` : "Every required control is in place."}</p></div>
       <div><h4>Detections</h4>
         ${t.d.length ? t.d.map(d => `<label class="chk"><input type="checkbox" id="d-${t.id}-${d}" data-act="det" data-id="${d}" ${S.det[d]?"checked":""}> <span class="mono">${d}</span> ${esc(DET[d][1])}</label>`).join("") : `<p class="muted small">No reliable detection. Rely on prevention.</p>`}
         <h4>Framework mapping</h4><div class="tags">${maps || `<span class="muted small">None</span>`}</div>
-        ${t.cases ? `<h4>Public cases</h4><ul class="cases">${t.cases.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+        ${t.cases ? `<h4>Public cases</h4><ul class="cases">${t.cases.map(c => `<li>${esc(c.t)} <a href="${esc(c.u)}" rel="noopener">Source ↗</a></li>`).join("")}</ul>` : ""}
         ${m.findings.length ? `<h4>Scanner findings</h4><ul class="cases">${m.findings.map(f => `<li>${gradePill(f.grade)} <span class="mono small">${esc(f.tool)}:${esc(f.id)}</span> ${esc(f.title)}</li>`).join("")}</ul>` : ""}
       </div>
     </div>
@@ -859,12 +970,12 @@ function renderPaths(M){
         ${p.applies ? `<span class="pill ${p.detOn.length ? "" : "s-open"}" title="Detections for threats on this path">Detection ${p.detOn.length}/${p.dets.length}</span>` : ""}
         ${p.evidenceStages ? `<span class="pill g-reachable">Scanner evidence on ${p.evidenceStages} of ${p.stages.length} stages</span>` : ""}</div>
       ${p.applies && p.dets.length ? `<p class="small muted">Would you see it? ${p.detOn.length ? `Deployed: ${p.detOn.map(d => `<span class="mono">${d}</span>`).join(", ")}. ` : "No detection deployed for this path. "}${p.dets.length - p.detOn.length ? `Not deployed: ${p.dets.filter(d => !S.det[d]).map(d => `<span class="mono">${d}</span>`).join(", ")}.` : ""}</p>` : ""}
-      ${!p.gate ? `<p class="small muted">Needs ${esc(p.needs)}.</p>` : ""}
+      ${!p.gate ? `<p class="small muted">Needs ${esc(p.needs)}.</p>` : ""}${p.origin && p.gate ? `<p class="small muted">Starts from ${esc(p.origin)}.</p>` : ""}
       <ol class="stages">${p.stages.map((s, i) => `
         <li class="stage ${s.blocked?"b":""} ${p.cheapest===i?"cheap":""}">
           <div class="sn">${i+1}. ${esc(s.name)}</div>
           <div class="chips">${s.ids.map(id => { const m = M.threats[id]; return `<button type="button" class="chip ${m.applies ? "s-" + m.status.toLowerCase() : "na"}" data-act="gothreat" data-id="${id}" title="${esc(THR[id].t)}">${id}${m.reach ? " ●" : ""}</button>`; }).join("")}</div>
-          ${p.cheapest===i ? `<div class="small"><b>Fewest missing controls:</b> ${s.missing.map(c => `<button type="button" class="ctl-link mono" data-act="goctrl" data-id="${c}" title="${esc(CTRL[c].t)}">${c}</button>`).join(" ")}</div>` : ""}
+          ${p.cheapest===i ? `<div class="small"><b>Fewest missing controls:</b> ${[...s.missing.map(c => `<button type="button" class="ctl-link mono" data-act="goctrl" data-id="${c}" title="${esc(CTRL[c].t)}">${c}</button>`), ...s.missingGroups.map(g => "one of " + g.map(c => `<button type="button" class="ctl-link mono" data-act="goctrl" data-id="${c}" title="${esc(CTRL[c].t)}">${c}</button>`).join(" / "))].join(", ")}</div>` : ""}
         </li>`).join("")}</ol>
     </div>`).join("")}
     <p class="small muted">● marks a threat with scanner evidence.</p>`;
@@ -879,14 +990,16 @@ function renderFindings(M){
       <div class="imp-row"><input type="file" id="imp-file" accept=".json,.sarif,application/json" data-act="impfile"><button type="button" data-act="impsample">Load Overreach sample</button></div>
       <textarea id="imp-text" rows="4" placeholder="Or paste JSON here" aria-label="Paste findings JSON"></textarea>
       <div class="imp-row"><button type="button" class="primary" data-act="imptext">Import pasted JSON</button><span id="imp-msg" class="small" role="status"></span></div>
-      <p class="small muted">Evidence grades carry through. Overreach <i>hypothetical</i> means reachable on the API spec, <i>simulated</i> means replayed, <i>validated</i> means proven against the running system. Only validated findings mark a threat as proven, and a proven threat that is marked mitigated is flagged as a conflict.</p>
+      <p class="small muted">Evidence grades carry through. Overreach <i>hypothetical</i> means reachable on the API spec, <i>simulated</i> means replayed, <i>validated</i> means proven against the running system. Only validated findings mark a threat as proven, and a proven threat that is marked mitigated is flagged as a conflict. Mappings from Overreach outcomes or from an explicit <span class="mono">threats</span> list count straight away. Mappings guessed from rule names or tags are marked <i>suggested</i> and count only after you confirm them.</p>
     </div>
-    <div class="filters"><span>${S.findings.length} findings${unmapped ? `, ${unmapped} not mapped to a threat` : ""}</span>${S.findings.length ? `<button type="button" class="link" data-act="clrfind">Remove all</button>` : ""}</div>
+    <div class="filters"><span>${S.findings.length} findings${unmapped ? `, ${unmapped} not mapped to a threat` : ""}${S.findings.filter(f => f.confirmed === false).length ? `, ${S.findings.filter(f => f.confirmed === false).length} with suggested mappings to review` : ""}</span>${S.findings.length ? `<button type="button" class="link" data-act="clrfind">Remove all</button>` : ""}</div>
     <div class="tbl-wrap"><table class="tt"><thead><tr><th>Source</th><th>Finding</th><th>Evidence</th><th>Maps to</th><th></th></tr></thead><tbody>
     ${S.findings.map((f, i) => `<tr><td class="small"><span class="mono">${esc(f.tool)}</span><div class="muted">${esc(f.id)}</div></td>
       <td>${esc(f.title)}${f.impact ? ` <span class="muted small">impact ${esc(f.impact)}</span>` : ""}<div class="small mono muted wrap">${esc(f.detail)}</div>${f.notes.length ? `<div class="small muted">${f.notes.map(esc).join(" · ")}</div>` : ""}</td>
       <td>${gradePill(f.grade)}</td>
-      <td>${f.threats.map(id => `<button type="button" class="chip ${M.threats[id].applies ? "s-" + M.threats[id].status.toLowerCase() : "na"}" data-act="gothreat" data-id="${id}" title="${esc(THR[id].t)}">${id}</button>`).join(" ") || `<span class="muted small">Unmapped</span>`}</td>
+      <td class="mapcell">${f.confirmed === false ? `<span class="pill">Suggested</span> ` : ""}${f.threats.map(id => `<span class="chipx"><button type="button" class="chip ${M.threats[id].applies ? "s-" + M.threats[id].status.toLowerCase() : "na"}" data-act="gothreat" data-id="${id}" title="${esc(THR[id].t)}">${id}</button><button type="button" class="x" data-act="unmap" data-i="${i}" data-id="${id}" aria-label="Remove mapping to ${id}">×</button></span>`).join(" ") || `<span class="muted small">Unmapped</span>`}
+        <div class="maprow"><select id="map-add-${i}" data-act="mapadd" data-i="${i}" aria-label="Map finding to a threat"><option value="">Add threat…</option>${THREATS.filter(t => !f.threats.includes(t.id)).map(t => `<option value="${t.id}">${t.id} ${esc(t.t.slice(0, 48))}</option>`).join("")}</select>
+        ${f.confirmed === false && f.threats.length ? `<button type="button" class="link" data-act="mapok" data-i="${i}">Confirm mapping</button>` : ""}</div></td>
       <td><button type="button" class="link" data-act="delfind" data-i="${i}" aria-label="Remove finding">Remove</button></td></tr>`).join("") || `<tr><td colspan="5" class="muted">No findings yet.</td></tr>`}
     </tbody></table></div>`;
 }
@@ -894,9 +1007,9 @@ function renderFindings(M){
 // ---------- frameworks ----------
 function renderFrameworks(M){
   $("#v-frameworks").innerHTML = `
-    <p class="small muted">Coverage of each framework item by applicable threats in this profile. Use this to answer "where are we on the OWASP Agentic Top 10" in a review. Mappings are ours, version 0.1: check them against the current framework releases before you cite them.</p>
+    <p class="small muted">Coverage of each framework item by applicable threats in this profile. Use this to answer "where are we on the OWASP Agentic Top 10" in a review. The mappings are ours. They follow the OWASP LLM Top 10 2026 numbering (August 2026), the OWASP Agentic Top 10 2026 and ATLAS technique IDs, checked in November 2026. Check them against the current releases before you cite them in an audit.</p>
     ${Object.entries(FRAMEWORKS).map(([k, fw]) => `
-      <h3>${esc(fw.name)}</h3>
+      <h3>${esc(fw.name)} ${fw.url ? `<a class="small" href="${esc(fw.url)}" rel="noopener">Source ↗</a>` : ""}</h3>
       <div class="tbl-wrap"><table class="tt fw"><thead><tr><th>Item</th><th>Applicable threats</th><th>State</th></tr></thead><tbody>
       ${Object.entries(fw.items).map(([id, name]) => {
         const ts = THREATS.filter(t => (t.map?.[k] || []).includes(id));
@@ -928,7 +1041,36 @@ function renderReport(M){
     <h3>Snapshots</h3>
     <p class="small muted">A snapshot stores today's numbers in this browser so the overview can show what changed. They also travel in the assessment file.</p>
     <div class="imp-row"><input id="snap-label" placeholder="Label, e.g. Pre-release review" aria-label="Snapshot label"><button type="button" data-act="snap">Save snapshot</button></div>
-    <ul class="snaps">${S.snapshots.slice().reverse().map(s => `<li><b>${esc(s.label)}</b> <span class="muted small">${esc(s.date)}</span> · ${s.outstanding} outstanding, ${s.mitigated} mitigated, ${s.openPaths} open paths</li>`).join("") || `<li class="muted">None yet.</li>`}</ul>`;
+    <ul class="snaps">${S.snapshots.slice().reverse().map(s => `<li><b>${esc(s.label)}</b> <span class="muted small">${esc(s.date)}</span> · ${s.outstanding} outstanding, ${s.mitigated} mitigated, ${s.openPaths} open paths</li>`).join("") || `<li class="muted">None yet.</li>`}</ul>
+    ${methodHtml()}`;
+}
+
+
+// ---------- method: how the numbers are made, with editable weights ----------
+function methodHtml(){
+  const W = weightsOf(S), num = (k, v, step=1, min=0, max=5) => `<input type="number" class="wt" id="wt-${k.replace(".","-")}" data-act="wt" data-k="${k}" value="${v}" step="${step}" min="${min}" max="${max}">`;
+  return `
+    <h3 id="method">Method and weights</h3>
+    <p class="small muted">Every number in this tool comes from the rules below. They are judgement, not measurement. Change the weights to match your own risk method; the defaults are restored with one click.</p>
+    <div class="method">
+      <div><h4>Risk rating</h4>
+        <p class="small">Each threat has a base likelihood and impact from 1 to 5. Score = likelihood × impact. Your profile adjusts them:</p>
+        <ul class="small">
+          <li>Agent acts on its own: likelihood of action threats + ${num("act", W.act)} (minus the same when it only suggests)</li>
+          <li>Users outside the company: likelihood of exposure threats + ${num("exposed", W.exposed)}</li>
+          <li>Sensitive data in scope: impact of data threats + ${num("data", W.data)}</li>
+          <li>Multi-tenant service: likelihood of tenant threats + ${num("mt", W.mt)}</li>
+        </ul>
+        <p class="small">Bands: Critical at ${num("band.0", W.bands[0], 1, 1, 25)} or more, High at ${num("band.1", W.bands[1], 1, 1, 25)}, Medium at ${num("band.2", W.bands[2], 1, 1, 25)}, otherwise Low. Controls never change the rating.</p></div>
+      <div><h4>Status</h4>
+        <p class="small">A threat is <b>Mitigated</b> when every required control is at least Implemented and each group of alternatives has at least one. <b>Verified</b> needs the same at Verified, and Verified only counts with evidence written down. <b>Partial</b> means some work exists. <b>Accepted</b> records a decision; the threat stays outstanding.</p>
+        <h4>Attack paths</h4>
+        <p class="small">A path applies when the profile meets its prerequisites and every stage has an applicable threat. A stage is broken when all its applicable threats are mitigated; one broken stage breaks the path. Detection is reported beside the path and never breaks it.</p></div>
+      <div><h4>"Do these first" ranking</h4>
+        <p class="small">For each control not yet Implemented: add the weight of every outstanding threat that requires it (Critical ${num("rank.Critical", W.rank.Critical, 0.5, 0, 10)}, High ${num("rank.High", W.rank.High, 0.5, 0, 10)}, Medium ${num("rank.Medium", W.rank.Medium, 0.5, 0, 10)}, Low ${num("rank.Low", W.rank.Low, 0.5, 0, 10)}). Where it is one of several alternatives it earns ${num("altShare", W.altShare, 0.1, 0, 1)} of that weight. Add ${num("path", W.path, 0.5, 0, 10)} for each open path where it sits on the stage with the fewest missing controls.
+        <label class="chk"><input type="checkbox" id="wt-prio" data-act="wt" data-k="prio" ${W.prio ? "checked" : ""}> Break ties in favour of P1 controls</label></p>
+        <p><button type="button" data-act="wreset">Restore default weights</button></p></div>
+    </div>`;
 }
 
 // ---------- exports ----------
@@ -937,10 +1079,10 @@ function exportText(kind, M){
   const p = S.profile, today = new Date().toISOString().slice(0,10);
   const profTxt = `${HOSTING.find(h=>h[0]===p.host)[1]}; ${AUTONOMY.find(h=>h[0]===p.autonomy)[1]}; ${AUDIENCE.find(h=>h[0]===p.audience)[1]}; ${p.feat.map(k => FEATURES.find(f=>f[0]===k)[1]).join(", ")}`;
   const out = M.app.filter(t => M.threats[t.id].outstanding).sort((a,b) => M.threats[b.id].score - M.threats[a.id].score);
-  if (kind === "json") return JSON.stringify({schema:"bwd-atw/0.1", saved:new Date().toISOString(), state:S}, null, 2);
+  if (kind === "json") return JSON.stringify({schema:"bwd-atw/0.2", saved:new Date().toISOString(), state:S}, null, 2);
   if (kind === "csv"){
     const rows = [["ID","Threat","Domain","Applies","Likelihood","Impact","Risk","Status","Controls missing","Evidence","OWASP LLM","OWASP Agentic","ATLAS"]];
-    THREATS.forEach(t => { const m = M.threats[t.id]; rows.push([t.id, t.t, DOMAINS[t.dom], m.applies?"yes":"no", m.L, m.I, m.risk, m.applies?m.status:"", t.c.filter(c => ctrlLevel(c) < 2).join(" "), m.proven?"proven":m.reach?"reachable":"", (t.map?.llm||[]).join(" "), (t.map?.asi||[]).join(" "), (t.map?.atlas||[]).join(" ")]); });
+    THREATS.forEach(t => { const m = M.threats[t.id]; rows.push([t.id, t.t, DOMAINS[t.dom], m.applies?"yes":"no", m.L, m.I, m.risk, m.applies?m.status:"", m.applies ? missingText(m.missing) : "", m.proven?"proven":m.reach?"reachable":"", (t.map?.llm||[]).join(" "), (t.map?.asi||[]).join(" "), (t.map?.atlas||[]).join(" ")]); });
     return rows.map(r => r.map(csvq).join(",")).join("\n");
   }
   if (kind === "tickets"){
@@ -958,12 +1100,12 @@ function exportText(kind, M){
   if (conf.length){ L.push(`**Conflicts:** ${conf.map(t => t.id).join(", ")} are marked mitigated but a validated finding shows them exploitable.`, ``); }
   L.push(`## Priority controls`, ``); M.leverage.slice(0, 10).forEach((l, i) => L.push(`${i+1}. **${l.cid}** ${CTRL[l.cid].t} (P${CTRL[l.cid].p}, now ${LEVELS[ctrlLevel(l.cid)]}). Helps close ${l.ts.join(", ")}.`)); L.push(``);
   L.push(`## Outstanding threats`, ``, `| ID | Threat | Risk | Status | Missing controls | Evidence |`, `|---|---|---|---|---|---|`);
-  out.forEach(t => { const m = M.threats[t.id]; L.push(`| ${t.id} | ${t.t} | ${m.risk} | ${m.status} | ${t.c.filter(c => ctrlLevel(c)<2).join(", ")} | ${m.proven?"Proven":m.reach?"Reachable":""} |`); }); L.push(``);
-  L.push(`## Attack paths`, ``); M.paths.filter(p=>p.applies).forEach(p => L.push(`- **${p.id} ${p.t}**: ${p.blocked ? "broken" : "open"}, detection ${p.detOn.length}/${p.dets.length}${!p.blocked && p.cheapest!==null ? `. Fewest missing controls at stage ${p.cheapest+1} (${p.stages[p.cheapest].name}): ${p.stages[p.cheapest].missing.join(", ")}` : ""}.`)); L.push(``);
+  out.forEach(t => { const m = M.threats[t.id]; L.push(`| ${t.id} | ${t.t} | ${m.risk} | ${m.status} | ${missingText(m.missing)} | ${m.proven?"Proven":m.reach?"Reachable":""} |`); }); L.push(``);
+  L.push(`## Attack paths`, ``); M.paths.filter(p=>p.applies).forEach(p => L.push(`- **${p.id} ${p.t}**: ${p.blocked ? "broken" : "open"}, detection ${p.detOn.length}/${p.dets.length}${!p.blocked && p.cheapest!==null ? `. Fewest missing controls at stage ${p.cheapest+1} (${p.stages[p.cheapest].name}): ${missingText({req:p.stages[p.cheapest].missing, groups:p.stages[p.cheapest].missingGroups})}` : ""}.`)); L.push(``);
   if (S.findings.length){ L.push(`## Scanner findings`, ``); S.findings.forEach(f => L.push(`- ${f.tool}:${f.id} ${f.title} (${f.grade}) maps to ${f.threats.join(", ") || "nothing"}`)); L.push(``); }
   const acc = Object.entries(S.accept).filter(([id]) => M.threats[id]?.applies);
   if (acc.length){ L.push(`## Accepted risk`, ``, `| Threat | Risk | Owner | Review by | Reason |`, `|---|---|---|---|---|`); acc.forEach(([id,a]) => L.push(`| ${id} ${THR[id].t} | ${M.threats[id].risk} | ${a.owner||""} | ${a.expiry||""} | ${(a.reason||"").replace(/\|/g,"/")} |`)); L.push(``); }
-  L.push(`---`, `Prepared with the Bitwise Defence Agent Threat Workbench 0.2. Ratings are an assessment aid, not advice for a specific system.  `, `Independent testing of agent boundaries and attack paths: contact@bitwisedefence.com, https://bitwisedefence.com`);
+  L.push(`---`, `Prepared with the Bitwise Defence Agent Threat Workbench 0.3. Ratings are an assessment aid, not advice for a specific system.  `, `Independent testing of agent boundaries and attack paths: contact@bitwisedefence.com, https://bitwisedefence.com`);
   return L.join("\n");
 }
 function openModal(title, text){
@@ -974,7 +1116,7 @@ function openModal(title, text){
 // ---------- render all ----------
 let M = null;
 function render(){
-  M = compute();
+  M = compute(S);
   renderProfile(M);
   document.querySelectorAll(".tabs button").forEach(b => { const on = b.dataset.v === UI.tab; b.setAttribute("aria-selected", on); b.classList.toggle("on", on); });
   document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "v-" + UI.tab);
@@ -1001,6 +1143,11 @@ document.addEventListener("click", e => {
   else if (a === "impsample"){ addFindings(importAny(SAMPLE_OVERREACH, "overreach-sample.json")); }
   else if (a === "imptext"){ try { addFindings(importAny(JSON.parse($("#imp-text").value), "pasted")); } catch(err){ $("#imp-msg").textContent = "Could not import: " + err.message; } }
   else if (a === "delfind"){ S.findings.splice(+el.dataset.i, 1); render(); }
+  else if (a === "unmap"){ const f = S.findings[+el.dataset.i]; f.threats = f.threats.filter(x => x !== el.dataset.id); render(); }
+  else if (a === "mapok"){ S.findings[+el.dataset.i].confirmed = true; render(); }
+  else if (a === "copylink"){ const url = shareLink(); const done = m => { const s = $("#link-msg"); if (s) s.textContent = m; };
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => done("Link copied."), () => openModal("Link to this profile", url)); }
+  else if (a === "wreset"){ S.weights = null; render(); }
   else if (a === "clrfind"){ S.findings = []; render(); }
   else if (a === "exp"){ const names = {md:"Review report (Markdown)", csv:"Threat register (CSV)", tickets:"Remediation tickets (CSV)", json:"Assessment file (JSON)"}; openModal(names[el.dataset.v], exportText(el.dataset.v, M)); }
   else if (a === "snap"){ const lbl = $("#snap-label").value.trim() || "Snapshot " + (S.snapshots.length + 1);
@@ -1015,6 +1162,9 @@ document.addEventListener("keydown", e => {
 document.addEventListener("change", e => {
   const el = e.target, a = el.dataset.act; if (!a) return;
   if (a === "feat"){ const f = new Set(S.profile.feat); el.checked ? f.add(el.dataset.k) : f.delete(el.dataset.k); S.profile.feat = FEATURES.map(x => x[0]).filter(k => f.has(k)); render(); }
+  else if (a === "mapadd"){ if (el.value){ const f = S.findings[+el.dataset.i]; f.threats.push(el.value); f.confirmed = true; render(); } }
+  else if (a === "wt"){ const W = S.weights ||= {}; const k = el.dataset.k, v = Number(el.value);
+    if (k.startsWith("rank.")){ (W.rank ||= {})[k.slice(5)] = v; } else if (k.startsWith("band.")){ const b = (W.bands ||= DEFAULT_WEIGHTS.bands.slice()); b[+k.slice(5)] = v; } else if (k === "prio"){ W.prio = el.checked; } else W[k] = v; render(); }
   else if (a === "lvl"){ const c = S.ctrl[el.dataset.id] ||= {}; c.lvl = +el.value; render(); }
   else if (a === "det"){ S.det[el.dataset.id] = el.checked; render(); }
   else if (a === "tf"){ UI.threatFilter[el.dataset.k] = el.type === "checkbox" ? el.checked : el.value; render(); }
@@ -1023,7 +1173,7 @@ document.addEventListener("change", e => {
   else if (a === "acc"){ const x = S.accept[el.dataset.id] ||= {}; x[el.dataset.k] = el.value; if (!x.owner && !x.reason && !x.expiry) delete S.accept[el.dataset.id]; render(); }
   else if (a === "impfile" || a === "loadfile"){ const file = el.files[0]; if (!file) return; file.text().then(txt => {
       try { const obj = JSON.parse(txt);
-        if (a === "loadfile" || obj.schema === "bwd-atw/0.1"){ if (!obj.state?.profile) throw new Error("Not a workbench assessment file."); S = Object.assign(blankState(), obj.state); S.example = false; render(); }
+        if (a === "loadfile" || /^bwd-atw\//.test(obj.schema || "")){ const st = migrate(obj.state); if (!st) throw new Error("Not a workbench assessment file."); S = st; S.example = false; render(); }
         else addFindings(importAny(obj, file.name));
       } catch(err){ const m = $(a === "loadfile" ? "#load-msg" : "#imp-msg"); if (m) m.textContent = "Could not load: " + err.message; } }); }
 });
@@ -1039,9 +1189,13 @@ function addFindings(list){
 window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== UI.tab && document.getElementById("v-" + h)) { UI.tab = h; render(); } });
 
 // ---------- boot ----------
-S = load();
-{ const h = location.hash.slice(1); if (h && document.getElementById("v-" + h)) UI.tab = h; }
-render();
+// Deferred so every script part (including the 3D map) is defined before the first render.
+function boot(){
+  S = load();
+  const h = location.hash.slice(1); if (h && document.getElementById("v-" + h)) UI.tab = h;
+  render();
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else setTimeout(boot, 0);
 
 // ---------- 3D map ----------
 // Isometric board: trust zones left to right, components as blocks, threats stacked as columns,
@@ -1235,9 +1389,9 @@ function mapBuild(M){
   MAPS.route = null;
   const ap = M.paths.find(x => x.id === MAPS.path && x.applies);
   if (ap){
-    const pts = [MAPS.pos.atk.clone()];
+    const pts = [(MAPS.pos[ap.from] || MAPS.pos.atk).clone()];
     const blockedAt = ap.stages.findIndex(s => s.blocked);
-    ap.stages.forEach(s => { const tid = s.app[0]; let a = ANCHOR[tid]; if (!MAPS.pos[a]) a = "app"; pts.push(MAPS.pos[a].clone()); });
+    ap.stages.forEach(s => { let a = s.anchor; if (!MAPS.pos[a]){ a = ANCHOR[s.app[0]]; if (!MAPS.pos[a]) a = "app"; } const v = MAPS.pos[a].clone(); if (pts.some(q => q.distanceTo(v) < 0.1)) v.x += 0.9; pts.push(v); });
     pts.forEach(v => v.y = 1.25);
     const g = new THREE.BufferGeometry().setFromPoints(pts);
     for (let i = 0; i < pts.length - 1; i++){
@@ -1269,7 +1423,7 @@ function mapPanel(M){
   if (MAPS.sel){
     const t = THR[MAPS.sel], m = M.threats[MAPS.sel];
     el.innerHTML = `<div class="mp-h"><span class="mono">${t.id}</span> ${riskPill(m.risk)} ${statPill(m.status)}</div><p><b>${esc(t.t)}</b></p><p class="small">${esc(t.s)}</p>
-      <p class="small muted">Missing: ${t.c.filter(c => ctrlLevel(c) < 2).map(c => `<span class="mono">${c}</span>`).join(", ") || "none"}</p>
+      <p class="small muted">Still needed: ${missingText(m.missing, true) || "nothing"}</p>
       ${m.findings.length ? `<p class="small">${gradePill(m.findings[0].grade)} ${m.findings.length} finding${m.findings.length > 1 ? "s" : ""}</p>` : ""}
       <div class="imp-row"><button type="button" class="primary" data-act="gothreat" data-id="${t.id}">Open in Threats</button><button type="button" data-act="mapclose">Close</button></div>`;
     el.hidden = false; return;
@@ -1279,7 +1433,7 @@ function mapPanel(M){
     const ap = r.ap;
     el.innerHTML = `<div class="mp-h"><span class="mono">${ap.id}</span> ${ap.blocked ? `<span class="pill s-mitigated">Broken</span>` : `<span class="pill s-open">Open</span>`}</div><p><b>${esc(ap.t)}</b></p>
       <ol class="mp-stages">${ap.stages.map((s, i) => `<li class="${s.blocked ? "b" : ""}"><span>${esc(s.name)}</span> <span class="small muted">${s.app.join(", ")}</span>${s.blocked ? ` <span class="pill s-mitigated">Gate</span>` : ""}</li>`).join("")}</ol>
-      <p class="small">${ap.blocked ? `Stopped at stage ${r.blockedAt + 1}. Every applicable threat there is mitigated.` : `Nothing stops it. Fewest missing controls at stage ${ap.cheapest + 1}: ${ap.stages[ap.cheapest].missing.map(c => `<span class="mono">${c}</span>`).join(", ")}.`}</p>
+      <p class="small">${ap.blocked ? `Stopped at stage ${r.blockedAt + 1}. Every applicable threat there is mitigated.` : `Nothing stops it. Fewest missing controls at stage ${ap.cheapest + 1}: ${missingText({req:ap.stages[ap.cheapest].missing, groups:ap.stages[ap.cheapest].missingGroups}, true)}.`}</p>
       <p class="small muted">Detection ${ap.detOn.length}/${ap.dets.length} deployed. Seeing it is not stopping it.</p>`;
     el.hidden = false; return;
   }
@@ -1348,6 +1502,7 @@ function mapFrame(now){
 
 function renderMap(M){
   if (!mapInit()) return;
+  if (UI.mapPath){ MAPS.path = UI.mapPath; UI.mapPath = ""; }
   const sel = $("#map-path");
   const opts = M.paths.map(p => `<option value="${p.id}" ${p.applies ? "" : "disabled"} ${MAPS.path === p.id ? "selected" : ""}>${p.id} ${esc(p.t)}${p.applies ? (p.blocked ? " (broken)" : " (open)") : " (does not apply)"}</option>`).join("");
   sel.innerHTML = `<option value="">None</option>` + opts;

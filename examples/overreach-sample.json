@@ -1,0 +1,153 @@
+{
+  "title": "Reference Code Host",
+  "chains_found": 3,
+  "chains": [
+    {
+      "id": "df301d8e0d43",
+      "outcome": "data_theft",
+      "evidence": "hypothetical",
+      "impact": 5,
+      "plausibility": 0.65,
+      "min_confidence": 0.5,
+      "source": {
+        "operation": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
+        "field": "body"
+      },
+      "boundaries": [
+        "untrusted text drives a privileged action",
+        "acts as 'support-agent'",
+        "tenant-scoped on 'owner'; confirm no cross-tenant access"
+      ],
+      "steps": [
+        {
+          "op": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
+          "note": "agent reads attacker text in 'body'"
+        },
+        {
+          "op": "POST /repos/{owner}/{repo}/hooks",
+          "note": "injected agent invokes a privileged operation"
+        }
+      ]
+    },
+    {
+      "id": "a3af9754ae4d",
+      "outcome": "data_theft",
+      "evidence": "hypothetical",
+      "impact": 5,
+      "plausibility": 0.65,
+      "min_confidence": 0.5,
+      "source": {
+        "operation": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
+        "field": "body"
+      },
+      "boundaries": [
+        "crosses tenant boundary: no ownership check for 'owner'",
+        "untrusted text drives a privileged action",
+        "acts as 'support-agent'",
+        "tenant-scoped on 'owner'; confirm no cross-tenant access"
+      ],
+      "steps": [
+        {
+          "op": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
+          "note": "agent reads attacker text in 'body'"
+        },
+        {
+          "op": "GET /repos/{owner}/{repo}/contents/{path}",
+          "note": "injected agent invokes a privileged operation"
+        }
+      ]
+    },
+    {
+      "id": "36de90ed53fc",
+      "outcome": "data_theft",
+      "evidence": "hypothetical",
+      "impact": 4,
+      "plausibility": 0.65,
+      "min_confidence": 0.5,
+      "source": {
+        "operation": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
+        "field": "body"
+      },
+      "boundaries": [
+        "writes to a reader-visible sink (exfiltration)",
+        "untrusted text drives a privileged action",
+        "acts as 'support-agent'",
+        "tenant-scoped on 'owner'; confirm no cross-tenant access"
+      ],
+      "steps": [
+        {
+          "op": "GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
+          "note": "agent reads attacker text in 'body'"
+        },
+        {
+          "op": "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
+          "note": "injected agent invokes a privileged operation"
+        }
+      ]
+    }
+  ],
+  "fix_options": [
+    {
+      "chains_prevented_conditional": 3,
+      "observed_prevention": false,
+      "chains_covered": 3,
+      "chains_total": 3,
+      "workflow_hits": 0,
+      "total_effort": 11,
+      "controls": [
+        {
+          "kind": "egress_allowlist",
+          "target": "POST /repos/{owner}/{repo}/hooks",
+          "effort": 3,
+          "enforces": true,
+          "description": "restrict outbound destinations on POST /repos/{owner}/{repo}/hooks (prevents exfiltration to attacker-named hosts)"
+        },
+        {
+          "kind": "remove_permission",
+          "target": "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
+          "effort": 4,
+          "enforces": true,
+          "description": "remove the agent's permission for POST /repos/{owner}/{repo}/issues/{issue_number}/comments (prevents: the agent can no longer call it)"
+        },
+        {
+          "kind": "remove_permission",
+          "target": "GET /repos/{owner}/{repo}/contents/{path}",
+          "effort": 4,
+          "enforces": true,
+          "description": "remove the agent's permission for GET /repos/{owner}/{repo}/contents/{path} (prevents: the agent can no longer call it)"
+        }
+      ]
+    },
+    {
+      "chains_prevented_conditional": 3,
+      "observed_prevention": false,
+      "chains_covered": 3,
+      "chains_total": 3,
+      "workflow_hits": 0,
+      "total_effort": 12,
+      "controls": [
+        {
+          "kind": "remove_permission",
+          "target": "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
+          "effort": 4,
+          "enforces": true,
+          "description": "remove the agent's permission for POST /repos/{owner}/{repo}/issues/{issue_number}/comments (prevents: the agent can no longer call it)"
+        },
+        {
+          "kind": "remove_permission",
+          "target": "POST /repos/{owner}/{repo}/hooks",
+          "effort": 4,
+          "enforces": true,
+          "description": "remove the agent's permission for POST /repos/{owner}/{repo}/hooks (prevents: the agent can no longer call it)"
+        },
+        {
+          "kind": "remove_permission",
+          "target": "GET /repos/{owner}/{repo}/contents/{path}",
+          "effort": 4,
+          "enforces": true,
+          "description": "remove the agent's permission for GET /repos/{owner}/{repo}/contents/{path} (prevents: the agent can no longer call it)"
+        }
+      ]
+    }
+  ]
+}

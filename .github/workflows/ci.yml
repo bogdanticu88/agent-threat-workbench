@@ -1,0 +1,19 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tests
+        run: node --test
+      - name: index.html matches src/
+        run: |
+          node build.mjs
+          git diff --exit-code index.html || (echo "index.html is stale. Run: node build.mjs" && exit 1)

@@ -1,0 +1,13 @@
+{
+  "name": "agent-threat-workbench",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Threat model for AI agents and MCP deployments. Single static page, built from src/.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test",
+    "check": "node build.mjs && node --test && git diff --exit-code index.html"
+  },
+  "license": "MIT"
+}
