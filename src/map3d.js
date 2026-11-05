@@ -32,7 +32,7 @@ const FLOWS = [["user","client"],["client","app"],["app","llm"],["app","policy"]
   ["ext","app"],["docs","vec"],["vec","app"],["app","mem"],["app","logs"],["reg","mcp"],["repo","ws"],["ws","llm"],["ws","orch"]];
 const ANCHOR = {T01:"client",T02:"ext",T03:"tools",T04:"mcp",T05:"reg",T06:"reg",T07:"orch",T08:"client",T09:"orch",T10:"mcp",T11:"mcp",T12:"mcp",T13:"client",T14:"tools",
   T15:"orch",T16:"orch",T17:"approval",T18:"app",T19:"sandbox",T20:"ws",T21:"vec",T22:"docs",T23:"vec",T24:"mem",T25:"mem",T26:"app",T27:"logs",T28:"llm",T29:"llm",T30:"llm",
-  T31:"client",T32:"llm",T33:"agents",T34:"agents",T35:"policy",T36:"app",T37:"logs",T38:"orch",T39:"llm",T40:"browser",T41:"user",T42:"orch"};
+  T31:"client",T32:"llm",T33:"agents",T34:"agents",T35:"policy",T36:"app",T37:"logs",T38:"orch",T39:"llm",T40:"browser",T41:"user",T42:"orch",T43:"orch"};
 const RISK_H = {Critical:4, High:3, Medium:2, Low:1};
 
 const MAPS = {built:false, az:Math.PI*0.25, el:0.62, zoom:1, path:"", sel:null, hover:null, t0:0, raf:0, dirty:true, paused:false};
@@ -40,7 +40,7 @@ const reduceMotion = () => window.matchMedia && matchMedia("(prefers-reduced-mot
 
 function statusColor(m){
   if (!m.applies) return MAP_COLORS.line;
-  return {Verified:MAP_COLORS.ink, Mitigated:MAP_COLORS.olive, Partial:MAP_COLORS.med, Accepted:MAP_COLORS.acc, Open:({Critical:MAP_COLORS.crit, High:MAP_COLORS.crit, Medium:MAP_COLORS.high, Low:MAP_COLORS.low})[m.risk]}[m.status];
+  return {Contradicted:MAP_COLORS.crit, Verified:MAP_COLORS.ink, Mitigated:MAP_COLORS.olive, Partial:MAP_COLORS.med, Accepted:MAP_COLORS.acc, Open:({Critical:MAP_COLORS.crit, High:MAP_COLORS.crit, Medium:MAP_COLORS.high, Low:MAP_COLORS.low})[m.risk]}[m.status];
 }
 
 function mapShell(){

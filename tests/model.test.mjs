@@ -17,8 +17,8 @@ const impl = (...ids) => Object.fromEntries(ids.map(id => [id, {lvl: 2}]));
 test("catalogue references only real controls, detections and threats", () => {
   const C = new Set(CONTROLS.map(c => c.id)), T = new Set(THREATS.map(t => t.id));
   for (const t of THREATS){
-    [...t.c, ...(t.alt || []).flat(), ...(t.opt || [])].forEach(c => assert.ok(C.has(c), `${t.id} -> ${c}`));
-    assert.ok(t.c.length || (t.alt || []).length, `${t.id} has no way to be mitigated`);
+    [...t.c, ...Object.values(t.reqIf || {}).flat(), ...(t.alt || []).flat(), ...(t.opt || [])].forEach(c => assert.ok(C.has(c), `${t.id} -> ${c}`));
+    assert.ok(t.c.length || (t.alt || []).length || Object.keys(t.reqIf || {}).length, `${t.id} has no way to be mitigated`);
     (t.cases || []).forEach(c => assert.match(c.u, /^https:\/\//, `${t.id} case has a source link`));
   }
   for (const p of PATHS) p.stages.forEach(s => s[1].forEach(id => assert.ok(T.has(id), `${p.id} -> ${id}`)));
@@ -78,8 +78,8 @@ test("a path breaks when one stage is fully mitigated, and detection never break
   const p1 = compute(open).paths.find(p => p.id === "AP-2");
   assert.equal(p1.applies, true); assert.equal(p1.blocked, false);
   assert.ok(p1.detOn.length >= 2, "detections are reported");
-  // stage 3: T17 (approval) needs TL-5, T18 needs OUT-1
-  const fixed = state(feat, {ctrl: impl("TL-5", "OUT-1")});
+  // stage 3: T17 (approval) needs TL-5; T43 needs TL-4 plus a policy check or approval
+  const fixed = state(feat, {ctrl: impl("TL-5", "TL-4")});
   const p2 = compute(fixed).paths.find(p => p.id === "AP-2");
   assert.equal(p2.blocked, true);
   assert.equal(p2.stages[2].blocked, true);
@@ -119,7 +119,7 @@ test("validated finding on a mitigated threat is flagged as a conflict", () => {
   const f = importAny({findings: [{title: "x", threats: ["T14"], evidence: "validated"}]}, "x");
   const s = state(["tools"], {findings: f, ctrl: impl("TL-7")});
   const m = compute(s).threats.T14;
-  assert.equal(m.status, "Mitigated"); assert.equal(m.conflict, true);
+  assert.equal(m.status, "Contradicted"); assert.equal(m.conflict, true); assert.equal(m.outstanding, true);
 });
 
 test("v1 saved state migrates without losing findings", () => {
@@ -137,4 +137,51 @@ test("profile round-trips through a link", () => {
   assert.equal(back.host, "platform"); assert.equal(back.audience, "multitenant");
   same(back.feat, ["tools", "mcp"]); assert.equal(back.path, "AP-4");
   assert.equal(api.profileFromQuery("?f=tools,evil").feat.join(), "tools", "unknown features are dropped");
+});
+
+// ---------- regressions from the v0.3 review ----------
+
+test("regression: a validated exploit stops a path from counting as broken", () => {
+  const feat = ["untrusted", "tools"];
+  const s = state(feat, {ctrl: impl("TL-5", "TL-4")});
+  assert.equal(compute(s).paths.find(p => p.id === "AP-2").blocked, true);
+  s.findings = importAny({findings: [{title: "unapproved transfer replayed", threats: ["T43"], evidence: "validated"}]}, "x");
+  const M = compute(s);
+  assert.equal(M.threats.T43.status, "Contradicted");
+  assert.equal(M.paths.find(p => p.id === "AP-2").blocked, false, "proof beats checkboxes");
+});
+
+test("regression: output encoding alone does not break the autonomous-action path", () => {
+  const s = state(["untrusted", "tools"], {ctrl: impl("OUT-1")}); s.profile.autonomy = "auto";
+  const p = compute(s).paths.find(p => p.id === "AP-2");
+  assert.equal(p.applies, true); assert.equal(p.blocked, false);
+  s.ctrl = impl("TL-4", "TL-2");
+  assert.equal(compute(s).paths.find(p => p.id === "AP-2").blocked, true, "a policy check outside the model with action limits does break it");
+});
+
+test("regression: retrieval ACLs do not mitigate memory leakage", () => {
+  const mem = state(["memory"], {ctrl: impl("DA-1")});
+  assert.notEqual(compute(mem).threats.T25.status, "Mitigated");
+  mem.ctrl = impl("DA-5");
+  assert.equal(compute(mem).threats.T25.status, "Mitigated");
+  const both = state(["memory", "rag"], {ctrl: impl("DA-5")});
+  assert.notEqual(compute(both).threats.T25.status, "Mitigated", "retrieval also needs its own isolation");
+  both.ctrl = impl("DA-5", "DA-1");
+  assert.equal(compute(both).threats.T25.status, "Mitigated");
+  same(compute(both).threats.T25.missing.req, []);
+});
+
+test("regression: malformed assessments are cleaned or refused, never crash", () => {
+  const bad = {v: 2, profile: {host: "nope", autonomy: 7, audience: null, feat: "tools"}, findings: null, ctrl: {"TL-1": {lvl: "x"}, "ZZ-9": {lvl: 2}},
+    det: [], accept: {T01: "yes", T02: {owner: 5}}, snapshots: {}, weights: {act: 99, bands: [1], rank: {High: "a"}}};
+  const s = migrate(bad);
+  assert.ok(s);
+  same(s.findings, []); same(s.profile.feat, []); assert.equal(s.profile.host, "api");
+  assert.equal(s.ctrl["TL-1"].lvl, 0); assert.equal(s.ctrl["ZZ-9"], undefined);
+  assert.equal(s.accept.T01, undefined); assert.equal(s.weights, null);
+  assert.doesNotThrow(() => compute(s));
+  const f = migrate({profile: {feat: ["tools"]}, findings: [null, 3, {threats: null}, {threats: ["T15", "BAD"], grade: "proven"}]});
+  assert.equal(f.findings.length, 2); same(f.findings[1].threats, ["T15"]);
+  assert.doesNotThrow(() => compute(f));
+  for (const junk of [null, 3, "x", [], {profile: null}, {profile: []}]) assert.equal(migrate(junk), null);
 });

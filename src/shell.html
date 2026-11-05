@@ -94,6 +94,9 @@ main{padding:0 32px 64px; min-width:0}
 .s-open{background:var(--open-soft); color:var(--crit); border-color:transparent} .s-partial{background:var(--part-soft); color:var(--part); border-color:transparent}
 .s-mitigated{background:var(--ok-soft); color:var(--ok); border-color:transparent} .s-verified{background:var(--ink); color:var(--acid); border-color:var(--ink)}
 .s-accepted{background:var(--acc-soft); color:var(--acc); border-color:transparent}
+.s-contradicted{background:var(--crit); color:var(--paper); border-color:var(--crit); outline:2px solid var(--acid); outline-offset:-4px}
+.seg-bar.s-contradicted, .dot.s-contradicted{background:var(--crit); outline:2px solid var(--acid); outline-offset:-2px}
+.reqif{margin:-4px 0 6px}
 .g-proven{background:var(--crit); color:var(--paper); border-color:var(--crit)} .g-simulated{color:var(--high); border-color:var(--high)} .g-reachable{color:var(--ink); border-color:var(--ink); background:var(--acid)} .g-reported{color:var(--muted)}
 .p1{color:var(--ink); border-color:var(--ink)} .p2,.p3{color:var(--muted)}
 
@@ -258,7 +261,7 @@ input.wt{width:58px; padding:2px 5px; font:500 13px var(--f-mono); background:va
   <div class="brand">
     <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
     <span class="wordmark">BITWISE DEFENCE</span><span class="sep" aria-hidden="true"></span><h1>Agent Threat Workbench</h1>
-    <span class="ver">v0.3</span>
+    <span class="ver">v0.3.1</span>
   </div>
   <div class="hdr-right">
     <span id="hdr-count"></span>
@@ -303,7 +306,7 @@ input.wt{width:58px; padding:2px 5px; font:500 13px var(--f-mono); background:va
       </div>
     </section>
     <footer class="foot">
-      Bitwise Defence Agent Threat Workbench 0.3. 42 threats, 45 controls, 19 detections and 7 attack paths, written for this project from public sources: the OWASP Top 10 for LLM Applications 2026, the OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, the MCP security best practices and published incident write-ups, each linked where it is used. How the numbers are made is set out under Report, Method and weights. Ratings are an assessment aid, not advice for a specific system.
+      Bitwise Defence Agent Threat Workbench 0.3. 43 threats, 45 controls, 19 detections and 7 attack paths, written for this project from public sources: the OWASP Top 10 for LLM Applications 2026, the OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, the MCP security best practices and published incident write-ups, each linked where it is used. How the numbers are made is set out under Report, Method and weights. Ratings are an assessment aid, not advice for a specific system.
       <span id="privacy-note">Your answers stay in this browser; nothing you enter is sent anywhere.</span>
       <a href="https://bitwisedefence.com/">bitwisedefence.com</a> · <a href="https://github.com/bogdanticu88/agent-threat-workbench">Source on GitHub</a> · <a href="https://github.com/bogdanticu88/OverReach">Overreach</a> (open source scanner for agent attack chains)
     </footer>

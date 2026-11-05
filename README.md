@@ -13,7 +13,7 @@ Links carry the profile, so you can send someone straight to a view. For example
 
 ```mermaid
 flowchart LR
-  P[Deployment profile] --> T[Applicable threats<br/>42 in the catalogue]
+  P[Deployment profile] --> T[Applicable threats<br/>43 in the catalogue]
   T --> R[Risk rating<br/>likelihood x impact,<br/>adjusted by profile]
   C[Controls you have<br/>graded with evidence] --> S[Threat status]
   T --> S
@@ -24,11 +24,11 @@ flowchart LR
   S --> O
 ```
 
-**Threats.** Each of the 42 threats has a scenario, a base likelihood and impact, the controls that close it, the detections that catch it, mappings to the OWASP Top 10 for LLM Applications 2026, the OWASP Top 10 for Agentic Applications 2026 and MITRE ATLAS, and a linked public case where one exists. A threat only appears when your profile has what it needs: the coding-agent threats need coding agents, the memory threats need memory.
+**Threats.** Each of the 43 threats has a scenario, a base likelihood and impact, the controls that close it, the detections that catch it, mappings to the OWASP Top 10 for LLM Applications 2026, the OWASP Top 10 for Agentic Applications 2026 and MITRE ATLAS, and a linked public case where one exists. A threat only appears when your profile has what it needs: the coding-agent threats need coding agents, the memory threats need memory.
 
-**Controls.** Real defences are not all-or-nothing, so each threat lists controls in three groups: required (all of them), alternatives (any one of them), and controls that also help but are not needed. Indirect prompt injection, for instance, needs tools to run with the user's rights, plus either isolation of untrusted content or removal of risky tools once that content is in context. Each control is graded Not in place, Partial, Implemented or Verified, and Verified only counts when the evidence is written down.
+**Controls.** Real defences are not all-or-nothing, so each threat lists controls in three groups: required (all of them), alternatives (any one of them), and controls that also help but are not needed. Some requirements depend on your profile: data leaking between users needs memory isolation if you have memory, retrieval permissions if you have retrieval, and delegated rights if you have tools, each on its own, because one store's isolation says nothing about another's. Indirect prompt injection, for instance, needs tools to run with the user's rights, plus either isolation of untrusted content or removal of risky tools once that content is in context. Each control is graded Not in place, Partial, Implemented or Verified, and Verified only counts when the evidence is written down.
 
-**Status.** A threat is Mitigated when every required control is at least Implemented and every group of alternatives has one. Controls change the status. They never quietly lower the risk rating. Accepting residual risk is recorded with an owner and a review date, and the threat stays outstanding.
+**Status.** A threat is Mitigated when every required control is at least Implemented and every group of alternatives has one. Controls change the status. They never quietly lower the risk rating. Proof outranks checkboxes: if a validated finding shows a threat is exploitable, it is marked Contradicted and stays outstanding, and any path through it stays open, whatever the controls say. Accepting residual risk is recorded with an owner and a review date, and the threat stays outstanding.
 
 **Attack paths.** Seven paths chain threats the way published incidents did, from planted content stealing data to an agent doing damage with no attacker at all. A path applies only when your profile has its prerequisites. It is broken when every applicable threat on any one stage is mitigated. Detection coverage is shown beside each path but never breaks it: an attack that gets logged still happened.
 
@@ -67,7 +67,7 @@ CI runs the tests and fails if `index.html` was not rebuilt after a change to `s
 
 ## Caveats
 
-Version 0.3. The framework mappings and public cases were checked in November 2026. Check them against the current releases before you cite them in an audit.
+Version 0.3.1. The framework mappings and public cases were checked in November 2026. Check them against the current releases before you cite them in an audit.
 
 ## Want the paths tested for real?
 

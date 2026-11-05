@@ -100,7 +100,7 @@ function renderOverview(M){
   const proven = M.app.filter(t => M.threats[t.id].proven).length;
   const reach = M.app.filter(t => M.threats[t.id].reach).length;
   const snap = S.snapshots[S.snapshots.length - 1];
-  const bar = ["Verified","Mitigated","Partial","Accepted","Open"].map(s => { const c = st(s); return c ? `<span class="seg-bar s-${s.toLowerCase()}" style="flex:${c}" title="${s}: ${c}"></span>` : ""; }).join("");
+  const bar = ["Verified","Mitigated","Partial","Accepted","Contradicted","Open"].map(s => { const c = st(s); return c ? `<span class="seg-bar s-${s.toLowerCase()}" style="flex:${c}" title="${s}: ${c}"></span>` : ""; }).join("");
   let delta = "";
   if (snap){
     const d = out.length - snap.outstanding, dm = (st("Mitigated")+st("Verified")) - snap.mitigated;
@@ -115,11 +115,11 @@ function renderOverview(M){
         <div class="bands">${["Critical","High","Medium","Low"].map(b => `<span>${riskPill(b)} ${byB(b)}</span>`).join("")}</div></div>
       <div class="tile"><div class="k">Assurance</div><div class="v">${st("Verified")}<small> verified</small></div>
         <div class="stack">${bar}</div>
-        <div class="legend small">${["Verified","Mitigated","Partial","Accepted","Open"].map(s => `<span><i class="dot s-${s.toLowerCase()}"></i>${s} ${st(s)}</span>`).join("")}</div></div>
+        <div class="legend small">${["Verified","Mitigated","Partial","Accepted","Contradicted","Open"].map(s => `<span><i class="dot s-${s.toLowerCase()}"></i>${s} ${st(s)}</span>`).join("")}</div></div>
       <div class="tile"><div class="k">Attack paths</div><div class="v">${openP.length}<small> open</small></div>
         <div class="small muted">${paths.length - openP.length} broken, ${paths.filter(p => p.evidenceStages).length} with scanner evidence</div></div>
       <div class="tile ${conflicts.length ? "warn" : ""}"><div class="k">Findings</div><div class="v">${S.findings.length}</div>
-        <div class="small muted">${proven} threats proven, ${reach} with any evidence${conflicts.length ? `<br><b class="t-crit">${conflicts.length} marked mitigated but proven exploitable</b>` : ""}</div></div>
+        <div class="small muted">${proven} threats proven, ${reach} with any evidence${conflicts.length ? `<br><b class="t-crit">${conflicts.length} contradicted: controls marked in place, but proven exploitable</b>` : ""}</div></div>
     </div>
     <h3>Do these first</h3>
     <p class="muted small">Ranked by the outstanding risk each control would help close, plus a bonus for sitting on the easiest stage of an open attack path. It counts controls, not effort or cost. <a href="#report" data-act="tab" data-v="report">See the method and change the weights</a>. One control alone may not close a threat.</p>
@@ -163,7 +163,7 @@ function threatRow(t, M){
   return `<tr class="trow ${m.applies?"":"na"} ${m.conflict?"conflict":""}" data-act="toggle" data-id="${t.id}" tabindex="0" aria-expanded="${!!open}">
     <td class="mono">${t.id}</td><td>${esc(t.t)}<div class="small muted">${DOMAINS[t.dom]}</div></td>
     <td>${m.applies ? riskPill(m.risk) + `<div class="small muted mono">L${m.L} × I${m.I}</div>` : `<span class="muted small">n/a</span>`}</td>
-    <td>${m.applies ? statPill(m.status) : ""}${m.conflict ? `<div class="small t-crit">Proven despite mitigation</div>` : ""}</td>
+    <td>${m.applies ? statPill(m.status) : ""}${m.conflict ? `<div class="small t-crit">Controls marked in place, but a validated finding proves it exploitable</div>` : ""}</td>
     <td>${ev}</td><td class="small">${t.d.length ? `${m.detDeployed}/${t.d.length} deployed` : `<span class="muted">None defined</span>`}</td></tr>
     ${open ? `<tr class="detail"><td colspan="6">${threatDetail(t, m)}</td></tr>` : ""}`;
 }
@@ -176,10 +176,11 @@ function threatDetail(t, m){
     <p class="small muted">Base L${t.L} × I${t.I}. ${m.why.length ? m.why.join(". ") + "." : "No profile adjustment."} Controls never lower this rating; they change the status.</p>
     <div class="det-grid">
       <div>
-        ${t.c.length ? `<h4>Required: all of these</h4>${t.c.map(cid => ctrlInline(cid, t.id)).join("")}` : ""}
+        ${(() => { const req = requiredFor(t, S.profile); const why = c => { for (const k in (t.reqIf || {})) if (t.reqIf[k].includes(c) && !t.c.includes(c)) return FEATURES.find(f => f[0] === k)[1]; return ""; };
+          return req.length ? `<h4>Required: all of these</h4>${req.map(cid => ctrlInline(cid, t.id) + (why(cid) ? `<div class="small muted reqif">Required because your profile has: ${esc(why(cid))}</div>` : "")).join("")}` : `<p class="small muted">Nothing is required until your profile has ${Object.keys(t.reqIf || {}).map(k => FEATURES.find(f => f[0] === k)[1]).join(", ") || "a matching capability"}.</p>`; })()}
         ${(t.alt || []).map((g, gi) => `<h4>Plus one of these</h4><div class="grp">${g.map(cid => ctrlInline(cid, t.id + "g" + gi)).join("")}</div>`).join("")}
         ${(t.opt || []).length ? `<h4>Also helps, not required</h4>${t.opt.map(cid => ctrlInline(cid, t.id + "o")).join("")}` : ""}
-        <p class="small muted">${m.missing.count ? `Still needed: ${missingText(m.missing, true)}.` : "Every required control is in place."}</p></div>
+        <p class="small muted">${m.missing.count ? `Still needed: ${missingText(m.missing, true)}.` : m.conflict ? `<b class="t-crit">Every required control is marked in place, but a validated finding shows this is still exploitable. Re-test the controls before trusting them.</b>` : "Every required control is in place."}</p></div>
       <div><h4>Detections</h4>
         ${t.d.length ? t.d.map(d => `<label class="chk"><input type="checkbox" id="d-${t.id}-${d}" data-act="det" data-id="${d}" ${S.det[d]?"checked":""}> <span class="mono">${d}</span> ${esc(DET[d][1])}</label>`).join("") : `<p class="muted small">No reliable detection. Rely on prevention.</p>`}
         <h4>Framework mapping</h4><div class="tags">${maps || `<span class="muted small">None</span>`}</div>
@@ -452,7 +453,7 @@ document.addEventListener("change", e => {
   else if (a === "acc"){ const x = S.accept[el.dataset.id] ||= {}; x[el.dataset.k] = el.value; if (!x.owner && !x.reason && !x.expiry) delete S.accept[el.dataset.id]; render(); }
   else if (a === "impfile" || a === "loadfile"){ const file = el.files[0]; if (!file) return; file.text().then(txt => {
       try { const obj = JSON.parse(txt);
-        if (a === "loadfile" || /^bwd-atw\//.test(obj.schema || "")){ const st = migrate(obj.state); if (!st) throw new Error("Not a workbench assessment file."); S = st; S.example = false; render(); }
+        if (a === "loadfile" || /^bwd-atw\//.test(obj.schema || "")){ const st = migrate(obj.state); if (!st) throw new Error("Not a workbench assessment file."); compute(st); /* dry run: a file that cannot be computed never replaces the current assessment */ st.example = false; S = st; render(); const m = $("#load-msg"); if (m) m.textContent = "Assessment loaded."; }
         else addFindings(importAny(obj, file.name));
       } catch(err){ const m = $(a === "loadfile" ? "#load-msg" : "#imp-msg"); if (m) m.textContent = "Could not load: " + err.message; } }); }
 });
