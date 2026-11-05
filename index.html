@@ -190,6 +190,14 @@ footer.foot a{color:var(--ink)}
 .nudge{margin:14px 0 0; font-size:14px; display:flex; flex-wrap:wrap; gap:6px 14px; align-items:baseline; border-left:3px solid var(--acid); padding:6px 0 6px 12px}
 .nudge a{color:var(--ink)}
 @media (max-width:980px){ .contact-band{margin:56px -6vw 0; padding:40px 6vw} .cb-grid{grid-template-columns:1fr; gap:18px} }
+
+.prof-mini{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
+.prof-toggle{border:1px solid var(--acid) !important; color:var(--acid) !important; background:transparent !important; padding:6px 12px !important; font-size:12px !important; flex-shrink:0}
+.prof-toggle:hover{background:var(--acid) !important; color:var(--ink) !important}
+aside#profile.collapsed{height:auto; padding-bottom:20px}
+.layout:has(aside.collapsed){grid-template-columns:1fr}
+.layout:has(aside.collapsed) aside#profile{position:static; border-bottom:1px solid var(--ink)}
+.layout:has(aside.collapsed) .side-sum{margin-bottom:0}
 @media (max-width:980px){
   .layout{grid-template-columns:1fr}
   aside#profile{position:static; height:auto}
@@ -200,7 +208,7 @@ footer.foot a{color:var(--ink)}
   .tile + .tile{padding-left:0; border-left:0; border-top:1px solid var(--line)}
   header.top{padding:12px 6vw; position:relative}
 }
-@media (max-width:480px){ .brand .sep, .brand h1{display:none} .stages{grid-auto-flow:row; grid-auto-columns:auto} .stage + .stage::before{display:none} .lede{font-size:24px} }
+@media (max-width:480px){ #hdr-count{display:none} .hdr-right{margin-left:0} .brand .sep, .brand h1{display:none} .stages{grid-auto-flow:row; grid-auto-columns:auto} .stage + .stage::before{display:none} .lede{font-size:24px} }
 @media (prefers-reduced-motion:reduce){ *{scroll-behavior:auto !important; transition:none !important} }
 </style>
 </head>
@@ -209,7 +217,7 @@ footer.foot a{color:var(--ink)}
   <div class="brand">
     <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
     <span class="wordmark">BITWISE DEFENCE</span><span class="sep" aria-hidden="true"></span><h1>Agent Threat Workbench</h1>
-    <span class="ver">v0.1</span>
+    <span class="ver">v0.2</span>
   </div>
   <div class="hdr-right">
     <span id="hdr-count"></span>
@@ -252,7 +260,7 @@ footer.foot a{color:var(--ink)}
       </div>
     </section>
     <footer class="foot">
-      Bitwise Defence Agent Threat Workbench 0.1. 42 threats, 45 controls, 19 detections and 6 attack paths, written for this project from public sources: OWASP Top 10 for LLM Applications, OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, the MCP security best practices, the CoSAI MCP security paper and published incident write-ups. Ratings are an assessment aid, not advice for a specific system. Everything runs in your browser; nothing is sent anywhere.
+      Bitwise Defence Agent Threat Workbench 0.2. 42 threats, 45 controls, 19 detections and 6 attack paths, written for this project from public sources: OWASP Top 10 for LLM Applications, OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, the MCP security best practices, the CoSAI MCP security paper and published incident write-ups. Ratings are an assessment aid, not advice for a specific system. Everything runs in your browser; nothing is sent anywhere.
       <a href="https://bitwisedefence.com/">bitwisedefence.com</a> · <a href="https://github.com/bogdanticu88/OverReach">Overreach</a> (open source scanner for agent attack chains)
     </footer>
   </main>
@@ -310,7 +318,7 @@ const CONTROLS = [
   {id:"ID-5", t:"Short-lived credentials, no static secrets in agent runtimes", p:1, ev:"Workload identity or vault-issued creds with TTL; secret scan of agent images", test:"Search runtime env and repos for long-lived keys"},
   {id:"ID-6", t:"Agent-to-agent and agent-to-MCP calls authenticated and authorised", p:1, ev:"mTLS or OAuth on every hop; per-tool authorisation rules", test:"Call an internal MCP endpoint without credentials and as the wrong client"},
   {id:"ID-7", t:"Lifecycle for agent identities and what they create", p:2, ev:"Expiry on agent principals, tokens and created resources; deprovisioning job", test:"Find agent-created resources older than policy allows"},
-  {id:"IN-1", t:"Untrusted content isolated and never treated as instructions", p:1, ev:"Design shows quarantine or dual-model pattern; content tagged by provenance", test:"Plant instructions in an email or doc and check the agent does not act on them"},
+  {id:"IN-1", t:"Untrusted content is read without authority to act", p:1, ev:"Architecture shows either a quarantined reader with no write, send or fetch tools, or a plan fixed before untrusted content is read (plan-then-execute); content carries a provenance tag", test:"Plant instructions in an email, document, web page and tool result; confirm none produces a tool call the user did not request. Limit: this stops actions, not misleading answers, so pair it with OUT-4"},
   {id:"IN-2", t:"Injection and jailbreak detection on inputs and tool results", p:2, ev:"Classifier in path for user input and tool output, with logged verdicts", test:"Run a public injection corpus and measure catch rate"},
   {id:"IN-3", t:"No secrets or access rules in system prompts", p:1, ev:"Prompt review showing no keys, URLs with tokens or authz logic", test:"Extract the system prompt and check what it reveals"},
   {id:"IN-4", t:"Rate, size, token and cost quotas", p:2, ev:"Per-user and per-agent quotas with alerting", test:"Drive a loop and confirm it stops at the limit"},
@@ -417,12 +425,19 @@ const THREATS = [
 
 // Attack paths. Each stage lists threats an attacker could use there.
 const PATHS = [
-  {id:"AP-1", t:"Planted content steals data", stages:[["Plant instructions",["T02","T22","T24","T40"]],["Reach private data",["T26","T21","T09"]],["Get it out",["T08","T07","T14"]]]},
-  {id:"AP-2", t:"Injected instructions trigger an unauthorised action", stages:[["Inject",["T02","T03","T40"]],["Agent holds the reach",["T15","T09"]],["Action passes the gate",["T17","T18"]],["Nobody can reconstruct it",["T37"]]]},
-  {id:"AP-3", t:"Poisoned MCP supply chain", stages:[["Bad server installed or changed",["T06","T05","T04"]],["Server sees tokens or data",["T10","T12"]],["Data or action leaves",["T07","T14"]]]},
-  {id:"AP-4", t:"Cross-tenant tool execution", stages:[["Get a foothold account",["T41","T01"]],["Gateway skips authorisation",["T09","T11","T12"]],["Read another tenant's data",["T25","T26"]]]},
-  {id:"AP-5", t:"Coding agent to production credentials", stages:[["Injected repo or issue content",["T02","T03"]],["Agent runs with developer rights",["T20","T19","T18"]],["Credentials leave or persist",["T07","T42"]]]},
-  {id:"AP-6", t:"Memory poisoning that keeps firing", stages:[["Inject",["T02","T31"]],["Written to memory",["T24"]],["Fires for later sessions or users",["T25","T26"]]]}
+  // req/any/when gate the path on the profile before any stage is checked. Stages are prevention only; detection is reported separately.
+  {id:"AP-1", t:"Planted content steals data", req:["untrusted"], any:["data","rag"], needs:"untrusted content plus sensitive data or retrieval",
+   stages:[["Plant instructions",["T02","T22","T24","T40"]],["Reach private data",["T26","T21","T09"]],["Get it out",["T08","T07","T14"]]]},
+  {id:"AP-2", t:"Injected instructions trigger an unauthorised action", req:["tools"], any:["untrusted","browser"], needs:"tool use plus untrusted content or browser use",
+   stages:[["Inject",["T02","T03","T40"]],["Agent holds the reach",["T15","T09"]],["Action passes the gate",["T17","T18"]]]},
+  {id:"AP-3", t:"Poisoned MCP supply chain", any:["mcp","plugins"], needs:"MCP servers or third-party plugins",
+   stages:[["Bad server installed or changed",["T06","T05","T04"]],["Server sees tokens or data",["T10","T12"]],["Data or action leaves",["T07","T14"]]]},
+  {id:"AP-4", t:"Cross-tenant tool execution", tAlt:"Cross-user tool execution through a shared gateway", req:["tools"], cond:p => p.audience === "multitenant" || p.feat.includes("mcp"), needs:"tool use plus a multi-tenant audience or a shared MCP gateway",
+   stages:[["Get a foothold account",["T41","T01"]],["Gateway skips authorisation",["T09","T11","T12"]],["Read another tenant's data",["T25","T26"],"Read another user's data"]]},
+  {id:"AP-5", t:"Coding agent to production credentials", req:["coding"], needs:"coding agents on workstations",
+   stages:[["Injected repo or issue content",["T02","T03"]],["Agent runs with developer rights",["T20","T19","T18"]],["Credentials leave or persist",["T07","T42"]]]},
+  {id:"AP-6", t:"Memory poisoning that keeps firing", req:["memory"], any:["untrusted"], needs:"persistent memory plus untrusted content",
+   stages:[["Inject",["T02","T31"]],["Written to memory",["T24"]],["Fires for later sessions or users",["T25","T26"]]]}
 ];
 
 const FRAMEWORKS = {
@@ -460,7 +475,7 @@ const LS_KEY = "bwd-atw-v1";
 const LEVELS = ["Not in place", "Partial", "Implemented", "Verified"];
 const BAND_W = {Critical:4, High:3, Medium:2, Low:1};
 let S = null; // state
-let UI = {tab:"overview", open:{}, threatFilter:{scope:"applicable", outstanding:false, dom:"all", q:""}, ctrlAll:false};
+let UI = {profOpen: !(window.matchMedia && matchMedia("(max-width: 980px)").matches), tab:"overview", open:{}, threatFilter:{scope:"applicable", outstanding:false, dom:"all", q:""}, ctrlAll:false};
 
 function blankState(){
   return {profile:{host:"api", autonomy:"approve", audience:"internal", feat:[]}, ctrl:{}, det:{}, accept:{}, findings:[], snapshots:[], example:false};
@@ -540,7 +555,11 @@ function compute(){
   }
   // paths
   for (const ap of PATHS){
-    const stages = ap.stages.map(([name, ids]) => {
+    const gate = (!ap.req || ap.req.every(k => F.has(k))) && (!ap.any || ap.any.some(k => F.has(k))) && (!ap.cond || ap.cond(p));
+    const mt = p.audience === "multitenant";
+    const title = (!mt && ap.tAlt) ? ap.tAlt : ap.t;
+    const stages = ap.stages.map(([name0, ids, nameAlt]) => {
+      const name = (!mt && nameAlt) ? nameAlt : name0;
       const app = ids.filter(id => M.threats[id].applies);
       const blocked = app.length > 0 && app.every(id => !M.threats[id].outstanding);
       const missing = new Set();
@@ -548,11 +567,13 @@ function compute(){
       const evidence = app.some(id => M.threats[id].reach);
       return {name, ids, app, blocked, missing:[...missing], evidence};
     });
-    const applies = stages.every(s => s.app.length > 0);
+    const applies = gate && stages.every(s => s.app.length > 0);
+    const dets = [...new Set(stages.flatMap(s => s.app.flatMap(id => THR[id].d)))];
+    const detOn = dets.filter(d => S.det[d]);
     const blocked = applies && stages.some(s => s.blocked);
     let cheapest = null;
     if (applies && !blocked) cheapest = stages.reduce((a, s, i) => (a === null || s.missing.length < stages[a].missing.length) ? i : a, null);
-    M.paths.push({...ap, stages, applies, blocked, cheapest, evidenceStages: stages.filter(s => s.evidence).length});
+    M.paths.push({...ap, t:title, gate, stages, applies, blocked, cheapest, dets, detOn, evidenceStages: stages.filter(s => s.evidence).length});
   }
   // leverage
   const lev = [];
@@ -626,8 +647,15 @@ function seg(name, opts, cur){
 }
 function renderProfile(M){
   const p = S.profile, F = new Set(p.feat);
+  const summary = `${HOSTING.find(h=>h[0]===p.host)[1]} · ${AUTONOMY.find(h=>h[0]===p.autonomy)[1]} · ${AUDIENCE.find(h=>h[0]===p.audience)[1]} · ${p.feat.length} capabilities`;
+  $("#profile").classList.toggle("collapsed", !UI.profOpen);
+  if (!UI.profOpen){
+    $("#profile").innerHTML = `<div class="prof-mini"><div><h2 class="side-h">Deployment profile</h2><p class="side-sum"><b>${M.app.length}</b> of ${THREATS.length} threats apply · ${esc(summary)}</p></div>
+      <button type="button" class="prof-toggle" data-act="proftoggle" aria-expanded="false">Edit profile</button></div>`;
+    return;
+  }
   $("#profile").innerHTML = `
-    <h2 class="side-h">Deployment profile</h2>
+    <div class="prof-mini"><h2 class="side-h">Deployment profile</h2><button type="button" class="prof-toggle" data-act="proftoggle" aria-expanded="true">Done</button></div>
     <p class="side-sum"><b>${M.app.length}</b> of ${THREATS.length} threats apply</p>
     <label class="lbl">Model hosting</label>${seg("host", HOSTING, p.host)}
     <label class="lbl">Autonomy</label>${seg("autonomy", AUTONOMY, p.autonomy)}
@@ -677,7 +705,7 @@ function renderOverview(M){
         <div class="small muted">${proven} threats proven, ${reach} with any evidence${conflicts.length ? `<br><b class="t-crit">${conflicts.length} marked mitigated but proven exploitable</b>` : ""}</div></div>
     </div>
     <h3>Do these first</h3>
-    <p class="muted small">Ranked by the weight of outstanding threats each control would help close (Critical 4, High 3, Medium 2, Low 1), plus 3 for every open attack path where it sits on the cheapest step to break. One control alone may not close a threat.</p>
+    <p class="muted small">Ranked by the weight of outstanding threats each control would help close (Critical 4, High 3, Medium 2, Low 1), plus 3 for every open attack path where it sits on the stage with the fewest missing controls. This counts controls, not effort or cost. One control alone may not close a threat.</p>
     <ol class="lev">${M.leverage.slice(0, 7).map(l => `
       <li><button type="button" class="ctl-link" data-act="goctrl" data-id="${l.cid}"><span class="mono">${l.cid}</span> ${esc(CTRL[l.cid].t)}</button>
       <span class="small muted">P${CTRL[l.cid].p} · ${l.ts.length} threats (${l.ts.map(id => `<span class="mono">${id}</span>`).join(", ")})${l.pathBreaks ? ` · breaks ${l.pathBreaks} path${l.pathBreaks>1?"s":""}` : ""} · now: ${LEVELS[ctrlLevel(l.cid)]}</span></li>`).join("") || "<li>Nothing outstanding.</li>"}</ol>
@@ -793,17 +821,20 @@ function renderControls(M){
 function renderPaths(M){
   const ps = M.paths;
   $("#v-paths").innerHTML = `
-    <p class="small muted">A path applies when every stage has at least one threat that applies. The attacker needs every stage, so breaking one stage breaks the path. A stage is broken only when every applicable threat in it is mitigated. Accepted risk does not break anything.</p>
+    <p class="small muted">A path applies when your profile has its prerequisites and every stage has at least one threat that applies. The attacker needs every stage, so breaking one stage breaks the path. A stage is broken only when every applicable threat in it is mitigated. Accepted risk does not break anything. Stages measure prevention only; detection coverage is shown separately, because an attack that is logged still succeeded.</p>
     ${ps.map(p => `
     <div class="path ${p.applies ? (p.blocked ? "blocked" : "open") : "na"}">
       <div class="ph"><span class="mono">${p.id}</span> <b>${esc(p.t)}</b>
         ${p.applies ? (p.blocked ? `<span class="pill s-mitigated">Broken</span>` : `<span class="pill s-open">Open</span>`) : `<span class="pill">Does not apply</span>`}
+        ${p.applies ? `<span class="pill ${p.detOn.length ? "" : "s-open"}" title="Detections for threats on this path">Detection ${p.detOn.length}/${p.dets.length}</span>` : ""}
         ${p.evidenceStages ? `<span class="pill g-reachable">Scanner evidence on ${p.evidenceStages} of ${p.stages.length} stages</span>` : ""}</div>
+      ${p.applies && p.dets.length ? `<p class="small muted">Would you see it? ${p.detOn.length ? `Deployed: ${p.detOn.map(d => `<span class="mono">${d}</span>`).join(", ")}. ` : "No detection deployed for this path. "}${p.dets.length - p.detOn.length ? `Not deployed: ${p.dets.filter(d => !S.det[d]).map(d => `<span class="mono">${d}</span>`).join(", ")}.` : ""}</p>` : ""}
+      ${!p.gate ? `<p class="small muted">Needs ${esc(p.needs)}.</p>` : ""}
       <ol class="stages">${p.stages.map((s, i) => `
         <li class="stage ${s.blocked?"b":""} ${p.cheapest===i?"cheap":""}">
           <div class="sn">${i+1}. ${esc(s.name)}</div>
           <div class="chips">${s.ids.map(id => { const m = M.threats[id]; return `<button type="button" class="chip ${m.applies ? "s-" + m.status.toLowerCase() : "na"}" data-act="gothreat" data-id="${id}" title="${esc(THR[id].t)}">${id}${m.reach ? " ●" : ""}</button>`; }).join("")}</div>
-          ${p.cheapest===i ? `<div class="small"><b>Cheapest to break:</b> ${s.missing.map(c => `<button type="button" class="ctl-link mono" data-act="goctrl" data-id="${c}" title="${esc(CTRL[c].t)}">${c}</button>`).join(" ")}</div>` : ""}
+          ${p.cheapest===i ? `<div class="small"><b>Fewest missing controls:</b> ${s.missing.map(c => `<button type="button" class="ctl-link mono" data-act="goctrl" data-id="${c}" title="${esc(CTRL[c].t)}">${c}</button>`).join(" ")}</div>` : ""}
         </li>`).join("")}</ol>
     </div>`).join("")}
     <p class="small muted">● marks a threat with scanner evidence.</p>`;
@@ -898,11 +929,11 @@ function exportText(kind, M){
   L.push(`## Priority controls`, ``); M.leverage.slice(0, 10).forEach((l, i) => L.push(`${i+1}. **${l.cid}** ${CTRL[l.cid].t} (P${CTRL[l.cid].p}, now ${LEVELS[ctrlLevel(l.cid)]}). Helps close ${l.ts.join(", ")}.`)); L.push(``);
   L.push(`## Outstanding threats`, ``, `| ID | Threat | Risk | Status | Missing controls | Evidence |`, `|---|---|---|---|---|---|`);
   out.forEach(t => { const m = M.threats[t.id]; L.push(`| ${t.id} | ${t.t} | ${m.risk} | ${m.status} | ${t.c.filter(c => ctrlLevel(c)<2).join(", ")} | ${m.proven?"Proven":m.reach?"Reachable":""} |`); }); L.push(``);
-  L.push(`## Attack paths`, ``); M.paths.filter(p=>p.applies).forEach(p => L.push(`- **${p.id} ${p.t}**: ${p.blocked ? "broken" : "open"}${!p.blocked && p.cheapest!==null ? `. Cheapest break at stage ${p.cheapest+1} (${p.stages[p.cheapest].name}): ${p.stages[p.cheapest].missing.join(", ")}` : ""}.`)); L.push(``);
+  L.push(`## Attack paths`, ``); M.paths.filter(p=>p.applies).forEach(p => L.push(`- **${p.id} ${p.t}**: ${p.blocked ? "broken" : "open"}, detection ${p.detOn.length}/${p.dets.length}${!p.blocked && p.cheapest!==null ? `. Fewest missing controls at stage ${p.cheapest+1} (${p.stages[p.cheapest].name}): ${p.stages[p.cheapest].missing.join(", ")}` : ""}.`)); L.push(``);
   if (S.findings.length){ L.push(`## Scanner findings`, ``); S.findings.forEach(f => L.push(`- ${f.tool}:${f.id} ${f.title} (${f.grade}) maps to ${f.threats.join(", ") || "nothing"}`)); L.push(``); }
   const acc = Object.entries(S.accept).filter(([id]) => M.threats[id]?.applies);
   if (acc.length){ L.push(`## Accepted risk`, ``, `| Threat | Risk | Owner | Review by | Reason |`, `|---|---|---|---|---|`); acc.forEach(([id,a]) => L.push(`| ${id} ${THR[id].t} | ${M.threats[id].risk} | ${a.owner||""} | ${a.expiry||""} | ${(a.reason||"").replace(/\|/g,"/")} |`)); L.push(``); }
-  L.push(`---`, `Prepared with the Bitwise Defence Agent Threat Workbench 0.1. Ratings are an assessment aid, not advice for a specific system.  `, `Independent testing of agent boundaries and attack paths: contact@bitwisedefence.com, https://bitwisedefence.com`);
+  L.push(`---`, `Prepared with the Bitwise Defence Agent Threat Workbench 0.2. Ratings are an assessment aid, not advice for a specific system.  `, `Independent testing of agent boundaries and attack paths: contact@bitwisedefence.com, https://bitwisedefence.com`);
   return L.join("\n");
 }
 function openModal(title, text){
@@ -928,7 +959,8 @@ function setTab(t){ UI.tab = t; try { history.replaceState(null, "", "#" + t); }
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]"); if (!el) return;
   const a = el.dataset.act;
-  if (a === "prof"){ S.profile[el.dataset.k] = el.dataset.v; render(); }
+  if (a === "proftoggle"){ UI.profOpen = !UI.profOpen; render(); }
+  else if (a === "prof"){ S.profile[el.dataset.k] = el.dataset.v; render(); }
   else if (a === "tab"){ setTab(el.dataset.v); }
   else if (a === "toggle"){ if (e.target.closest("select,input,textarea,button,a,label")) return; UI.open[el.dataset.id] = !UI.open[el.dataset.id]; render(); }
   else if (a === "gothreat"){ UI.open[el.dataset.id] = true; UI.threatFilter.scope = M.threats[el.dataset.id].applies ? "applicable" : "all"; UI.threatFilter.q = ""; UI.threatFilter.dom = "all"; UI.threatFilter.outstanding = false; setTab("threats"); const r = document.querySelector(`[data-id="${el.dataset.id}"].trow`); if (r) r.scrollIntoView({block:"center"}); }

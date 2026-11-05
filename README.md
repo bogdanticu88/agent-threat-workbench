@@ -9,7 +9,7 @@ Describe your deployment: where the model runs, how much it is allowed to do on 
 ## What it does
 
 - **42 threats** across input and context, identity and delegation, tools and actions, data and memory, MCP and supply chain, output handling and operations. Each threat has a scenario, a risk rating, the controls that close it, the detections that catch it, framework mappings and, where one exists, a public case.
-- **6 attack paths** that chain threats the way real incidents did. A path is broken when every threat on any one of its stages is mitigated, and the tool points at the cheapest stage to break.
+- **6 attack paths** that chain threats the way real incidents did. Each path has explicit prerequisites, so it only appears when your deployment can actually be attacked that way. A path is broken when every threat on any one of its stages is mitigated, and the tool points at the stage with the fewest missing controls. Detection coverage is shown per path but kept separate from prevention: an attack that gets logged still succeeded.
 - **Graded controls.** Not in place, partial, implemented or verified. Verified only counts when you write down the evidence. Controls change a threat's status; they never quietly lower its rating.
 - **Scanner evidence.** Import [Overreach](https://github.com/bogdanticu88/OverReach) JSON or SARIF, any SARIF 2.1.0 file, or a simple findings list. Evidence grades carry through: reachable on the spec, simulated, or proven. A threat marked mitigated that a validated finding proves exploitable is flagged as a conflict.
 - **Outputs for a review.** Markdown report, threat register CSV, remediation tickets for Jira or ServiceNow, a risk acceptance register with owners and review dates, snapshots to show progress, and a JSON assessment file to save and reload.
@@ -25,7 +25,7 @@ Open `index.html` in a browser. That's it.
 
 ## Caveats
 
-Version 0.1. Ratings are an assessment aid, not advice for your specific system. The framework mappings are ours: check them against the current releases before you cite them in an audit.
+Version 0.2. Ratings are an assessment aid, not advice for your specific system. The framework mappings are ours: check them against the current releases before you cite them in an audit.
 
 ## Want the paths tested for real?
 
